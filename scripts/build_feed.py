@@ -2,7 +2,7 @@
 import json
 import re
 import time
-from datetime import datetime, timezone, timedelta
+from datetime import datetime, timezone
 from email.utils import format_datetime, parsedate_to_datetime
 from html import escape
 from pathlib import Path
@@ -12,6 +12,7 @@ import requests
 from bs4 import BeautifulSoup
 
 BASE = "https://mehlmanmedical.com/category/free-video-qbank/"
+WP_API = "https://mehlmanmedical.com/wp-json/wp/v2"
 ROOT = Path(__file__).resolve().parents[1]
 DATA_FILE = ROOT / "data" / "posts.json"
 FEED_FILE = ROOT / "docs" / "feed.xml"
@@ -121,6 +122,110 @@ def load_existing():
         return data if isinstance(data, list) else []
     except Exception:
         return []
+
+
+def normalize_url(url):
+    return (url or "").split("#", 1)[0].split("?", 1)[0].rstrip("/") + "/"
+
+
+def fetch_wp_publication_dates():
+    """
+    Fetch exact WordPress publication dates for every post in the
+    Free Video Qbank category. This avoids inventing dates for old items.
+    """
+    try:
+        r = session.get(
+            f"{WP_API}/categories",
+            params={"slug": "free-video-qbank", "per_page": 100, "_fields": "id,slug"},
+            timeout=TIMEOUT,
+        )
+        r.raise_for_status()
+        categories = r.json()
+        if not categories:
+            raise RuntimeError("Free Video Qbank category not found in WordPress REST API")
+
+        category_id = categories[0]["id"]
+        dates = {}
+        page = 1
+
+        while True:
+            r = session.get(
+                f"{WP_API}/posts",
+                params={
+                    "categories": category_id,
+                    "per_page": 100,
+                    "page": page,
+                    "_fields": "link,date,date_gmt,slug",
+                },
+                timeout=TIMEOUT,
+            )
+
+            if r.status_code == 400:
+                break
+
+            r.raise_for_status()
+            batch = r.json()
+            if not batch:
+                break
+
+            for item in batch:
+                link = normalize_url(item.get("link"))
+                raw = item.get("date_gmt") or item.get("date")
+                if not link or not raw:
+                    continue
+
+                # WordPress date_gmt is returned without a timezone suffix.
+                try:
+                    dt = datetime.fromisoformat(raw.replace("Z", "+00:00"))
+                    if dt.tzinfo is None:
+                        dt = dt.replace(tzinfo=timezone.utc)
+                    dates[link] = dt.isoformat()
+                except Exception:
+                    continue
+
+            total_pages = r.headers.get("X-WP-TotalPages")
+            if total_pages:
+                if page >= int(total_pages):
+                    break
+            elif len(batch) < 100:
+                break
+
+            page += 1
+            time.sleep(0.15)
+
+        print(f"WordPress REST: loaded {len(dates)} exact publication dates")
+        return dates
+
+    except Exception as exc:
+        print(f"WARNING: could not load WordPress publication dates: {exc}")
+        return {}
+
+
+def repair_publication_dates(posts):
+    date_map = fetch_wp_publication_dates()
+
+    if not date_map:
+        print("No exact date map available; existing dates will be kept.")
+        return posts
+
+    matched = 0
+    missing = 0
+
+    for post in posts:
+        key = normalize_url(post.get("url"))
+        exact = date_map.get(key)
+
+        if exact:
+            post["published"] = exact
+            matched += 1
+        else:
+            # Do not manufacture a current-time date for items the API
+            # could not match. Better no date than a false date.
+            post["published"] = None
+            missing += 1
+
+    print(f"Publication dates repaired: {matched} exact, {missing} unmatched")
+    return posts
 
 
 def absolutize_content(content, page_url):
@@ -328,23 +433,7 @@ def backfill_full_content(posts):
     return list(by_url.values())
 
 
-def assign_fallback_dates(posts):
-    # Only used if a post page did not expose a publication date.
-    now = datetime.now(timezone.utc).replace(microsecond=0)
-    posts.sort(
-        key=lambda p: (p.get("qnum") is not None, p.get("qnum") or -1),
-        reverse=True,
-    )
-
-    for i, p in enumerate(posts):
-        if not p.get("published"):
-            p["published"] = (now - timedelta(minutes=i)).isoformat()
-
-    return posts
-
-
 def save_posts(posts):
-    posts = assign_fallback_dates(posts)
     DATA_FILE.parent.mkdir(parents=True, exist_ok=True)
     DATA_FILE.write_text(
         json.dumps(posts, indent=2, ensure_ascii=False) + "\n",
@@ -354,7 +443,7 @@ def save_posts(posts):
 
 def to_datetime(raw):
     if not raw:
-        return datetime.now(timezone.utc)
+        return None
 
     try:
         dt = datetime.fromisoformat(raw.replace("Z", "+00:00"))
@@ -370,7 +459,7 @@ def to_datetime(raw):
             dt = dt.replace(tzinfo=timezone.utc)
         return dt
     except Exception:
-        return datetime.now(timezone.utc)
+        return None
 
 
 def cdata(value):
@@ -391,6 +480,11 @@ def build_feed(posts):
         title = escape(p.get("title", ""), quote=False)
         link = escape(p.get("url", ""), quote=True)
         dt = to_datetime(p.get("published"))
+        pub_date_xml = (
+            f"      <pubDate>{format_datetime(dt)}</pubDate>\n"
+            if dt is not None
+            else ""
+        )
 
         html = p.get("content_html", "").strip()
         if html:
@@ -408,8 +502,7 @@ def build_feed(posts):
       <title>{title}</title>
       <link>{link}</link>
       <guid isPermaLink="true">{link}</guid>
-      <pubDate>{format_datetime(dt)}</pubDate>
-      <description><![CDATA[{html}]]></description>
+{pub_date_xml}      <description><![CDATA[{html}]]></description>
       <content:encoded><![CDATA[{html}]]></content:encoded>
     </item>""")
 
@@ -436,6 +529,7 @@ def main():
     existing = load_existing()
     posts = discover_posts(existing)
     posts = backfill_full_content(posts)
+    posts = repair_publication_dates(posts)
     save_posts(posts)
     build_feed(posts)
 
