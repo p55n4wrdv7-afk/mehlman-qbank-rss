@@ -4,15 +4,16 @@ import re
 import time
 from datetime import datetime, timezone
 from email.utils import format_datetime, parsedate_to_datetime
-from html import escape
+from html import escape, unescape
 from pathlib import Path
 from urllib.parse import urljoin
+import xml.etree.ElementTree as ET
 
 import requests
 from bs4 import BeautifulSoup
 
 BASE = "https://mehlmanmedical.com/category/free-video-qbank/"
-WP_API = "https://mehlmanmedical.com/wp-json/wp/v2"
+PODCAST_RSS = "https://anchor.fm/s/2447ab5c/podcast/rss"
 ROOT = Path(__file__).resolve().parents[1]
 DATA_FILE = ROOT / "data" / "posts.json"
 FEED_FILE = ROOT / "docs" / "feed.xml"
@@ -124,107 +125,120 @@ def load_existing():
         return []
 
 
-def normalize_url(url):
-    return (url or "").split("#", 1)[0].split("?", 1)[0].rstrip("/") + "/"
+def normalize_title(title):
+    """Normalize small punctuation/spacing differences for title matching."""
+    s = unescape(title or "")
+    s = (
+        s.replace("–", "-")
+         .replace("—", "-")
+         .replace("−", "-")
+         .replace("’", "'")
+         .replace("“", '"')
+         .replace("”", '"')
+    )
+    s = re.sub(r"\s+", " ", s).strip().lower()
+    # Make "# 247" and "#247" compare the same.
+    s = re.sub(r"#\s+", "#", s)
+    return s
 
 
-def fetch_wp_publication_dates():
+def fetch_podcast_publication_dates():
     """
-    Fetch exact WordPress publication dates for every post in the
-    Free Video Qbank category. This avoids inventing dates for old items.
+    Use Mehlman's official podcast RSS as the date authority.
+
+    This is much better than the WordPress REST dates for this site:
+    the WordPress dates can reflect migration/re-import timestamps,
+    whereas the podcast RSS preserves the original episode chronology.
     """
     try:
         r = session.get(
-            f"{WP_API}/categories",
-            params={"slug": "free-video-qbank", "per_page": 100, "_fields": "id,slug"},
+            PODCAST_RSS,
             timeout=TIMEOUT,
+            headers={
+                "User-Agent": USER_AGENT,
+                "Accept": "application/rss+xml, application/xml, text/xml, */*",
+            },
         )
         r.raise_for_status()
-        categories = r.json()
-        if not categories:
-            raise RuntimeError("Free Video Qbank category not found in WordPress REST API")
 
-        category_id = categories[0]["id"]
-        dates = {}
-        page = 1
+        root = ET.fromstring(r.content)
+        items = root.findall(".//item")
 
-        while True:
-            r = session.get(
-                f"{WP_API}/posts",
-                params={
-                    "categories": category_id,
-                    "per_page": 100,
-                    "page": page,
-                    "_fields": "link,date,date_gmt,slug",
-                },
-                timeout=TIMEOUT,
-            )
+        by_title = {}
+        by_qnum = {}
 
-            if r.status_code == 400:
-                break
+        for item in items:
+            title = clean_text(item.findtext("title") or "")
+            pub_raw = clean_text(item.findtext("pubDate") or "")
+            if not title or not pub_raw:
+                continue
 
-            r.raise_for_status()
-            batch = r.json()
-            if not batch:
-                break
+            try:
+                dt = parsedate_to_datetime(pub_raw)
+                if dt.tzinfo is None:
+                    dt = dt.replace(tzinfo=timezone.utc)
+                iso = dt.isoformat()
+            except Exception:
+                continue
 
-            for item in batch:
-                link = normalize_url(item.get("link"))
-                raw = item.get("date_gmt") or item.get("date")
-                if not link or not raw:
-                    continue
+            key = normalize_title(title)
+            by_title.setdefault(key, []).append(iso)
 
-                # WordPress date_gmt is returned without a timezone suffix.
-                try:
-                    dt = datetime.fromisoformat(raw.replace("Z", "+00:00"))
-                    if dt.tzinfo is None:
-                        dt = dt.replace(tzinfo=timezone.utc)
-                    dates[link] = dt.isoformat()
-                except Exception:
-                    continue
+            number = qnum(title)
+            if number is not None:
+                by_qnum.setdefault(number, []).append((key, iso))
 
-            total_pages = r.headers.get("X-WP-TotalPages")
-            if total_pages:
-                if page >= int(total_pages):
-                    break
-            elif len(batch) < 100:
-                break
-
-            page += 1
-            time.sleep(0.15)
-
-        print(f"WordPress REST: loaded {len(dates)} exact publication dates")
-        return dates
+        print(
+            f"Podcast RSS: loaded {len(items)} episodes, "
+            f"{len(by_title)} normalized titles"
+        )
+        return by_title, by_qnum
 
     except Exception as exc:
-        print(f"WARNING: could not load WordPress publication dates: {exc}")
-        return {}
+        print(f"WARNING: could not load podcast RSS publication dates: {exc}")
+        return {}, {}
 
 
 def repair_publication_dates(posts):
-    date_map = fetch_wp_publication_dates()
+    by_title, by_qnum = fetch_podcast_publication_dates()
 
-    if not date_map:
-        print("No exact date map available; existing dates will be kept.")
+    if not by_title:
+        print("No podcast date map available; dates left unchanged.")
         return posts
 
-    matched = 0
-    missing = 0
+    exact = 0
+    qmatch = 0
+    unmatched = 0
 
     for post in posts:
-        key = normalize_url(post.get("url"))
-        exact = date_map.get(key)
+        # IMPORTANT: clear the bad WordPress-import timestamp first.
+        post["published"] = None
 
-        if exact:
-            post["published"] = exact
-            matched += 1
+        title_key = normalize_title(post.get("title"))
+        title_dates = by_title.get(title_key, [])
+
+        if len(title_dates) == 1:
+            post["published"] = title_dates[0]
+            exact += 1
+            continue
+
+        number = post.get("qnum")
+        candidates = by_qnum.get(number, []) if number is not None else []
+
+        # Only use q-number fallback when the podcast contains exactly
+        # one episode with that number. This avoids bad matches for known
+        # numbering anomalies such as duplicate #1423 entries.
+        if len(candidates) == 1:
+            post["published"] = candidates[0][1]
+            qmatch += 1
         else:
-            # Do not manufacture a current-time date for items the API
-            # could not match. Better no date than a false date.
-            post["published"] = None
-            missing += 1
+            unmatched += 1
 
-    print(f"Publication dates repaired: {matched} exact, {missing} unmatched")
+    print(
+        "Publication dates repaired from official podcast RSS: "
+        f"{exact} exact-title, {qmatch} unique-Q fallback, "
+        f"{unmatched} unmatched"
+    )
     return posts
 
 
@@ -512,7 +526,7 @@ def build_feed(posts):
   <channel>
     <title>Mehlman Medical – Complete Free Video Qbank</title>
     <link>{BASE}</link>
-    <description>Complete historical archive of numbered Mehlman Medical Free Video Qbank posts with full article content, automatically updated.</description>
+    <description>Complete historical archive of numbered Mehlman Medical Free Video Qbank posts with full article content and original publication dates, automatically updated.</description>
     <language>en</language>
     <lastBuildDate>{format_datetime(build_dt)}</lastBuildDate>
     <generator>mehlman-qbank-rss</generator>
