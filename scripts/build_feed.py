@@ -543,7 +543,6 @@ def main():
     existing = load_existing()
     posts = discover_posts(existing)
     posts = backfill_full_content(posts)
-    posts = repair_publication_dates(posts)
     save_posts(posts)
     build_feed(posts)
 
