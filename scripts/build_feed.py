@@ -166,12 +166,8 @@ def discover(existing, full=False):
 
 
 def original_date(soup):
-    for node in soup.select("time.entry-date[datetime], time.published[datetime], "
-                            "[itemprop='datePublished'][datetime], "
-                            "meta[property='article:published_time']"):
-        value = date(node.get("datetime") or node.get("content"))
-        if value:
-            return value.isoformat()
+    # Generic <time> elements on this site belong to related articles.
+    # Dates are obtained from the URL-matched WordPress record in repair_dates.
     return None
 
 
@@ -239,39 +235,44 @@ def normalized(title):
 
 
 def repair_dates(posts):
-    try:
-        root = ET.fromstring(get(PODCAST_RSS))
-        titles, numbers = defaultdict(set), defaultdict(set)
-        for item in root.findall(".//item"):
-            title = normalized(item.findtext("title"))
-            value = date(item.findtext("pubDate"))
-            if title and value:
-                iso = value.isoformat()
-                titles[title].add(iso)
-                number = qnum(title)
-                if number is not None:
-                    numbers[number].add((title, iso))
-    except (requests.RequestException, ET.ParseError) as exc:
-        print(f"WARNING: podcast unavailable; keeping saved dates: {exc}")
-        return
-    counts = Counter(qnum(p["title"]) for p in posts)
+    """Use each article's own WordPress publication date, never related-post dates."""
+    api = "https://mehlmanmedical.com/wp-json/wp/v2/"
+    categories = json.loads(get(api + "categories?slug=free-video-qbank"))
+    if len(categories) != 1:
+        raise RuntimeError("Cannot identify the Qbank category for date verification")
+    category_id = int(categories[0]["id"])
+    records = {}
+    page = 1
+    while True:
+        url = (api + f"posts?categories={category_id}&per_page=100&page={page}"
+               + "&_fields=id,link,date_gmt")
+        batch = json.loads(get(url))
+        if not isinstance(batch, list):
+            raise RuntimeError("Unexpected WordPress date response")
+        for record in batch:
+            records[url_key(record["link"])] = record
+        if len(batch) < 100 or page * 100 >= int(categories[0]["count"]):
+            break
+        page += 1
+        time.sleep(0.5)
     matched = 0
     for post in posts:
-        title = normalized(post["title"])
-        matches = titles.get(title, set())
-        source = "podcast-title"
-        number = qnum(post["title"])
-        if len(matches) != 1:
-            candidates = numbers.get(number, set())
-            matches = {next(iter(candidates))[1]} if counts[number] == 1 and len(candidates) == 1 else set()
-            source = "podcast-number"
-        if len(matches) == 1:
-            if post.get("published") and "previous_published" not in post:
-                post["previous_published"] = post["published"]
-            post.update(published=next(iter(matches)), date_source=source)
-            matched += 1
-        # Unmatched posts retain their saved dates, including their provenance.
-    print(f"Podcast dates matched: {matched}/{len(posts)}; unmatched dates preserved")
+        record = records.get(url_key(post["url"]))
+        raw = record.get("date_gmt") if record else None
+        if not raw or raw.startswith("0000-"):
+            continue
+        published = date(raw + "Z")
+        if not published:
+            continue
+        if post.get("published") and "previous_published" not in post:
+            post["previous_published"] = post["published"]
+        post.update(published=published.isoformat(), date_source="wordpress-api",
+                    date_source_url=api + "posts/" + str(record["id"]))
+        matched += 1
+    if not matched:
+        raise RuntimeError("No WordPress publication dates matched; refusing to publish")
+    print(f"WordPress dates matched by post URL: {matched}/{len(posts)}; "
+          "unmatched saved dates preserved")
 
 
 def xml_safe(value):
@@ -289,7 +290,7 @@ def build_feed(posts):
         ET.SubElement(parent, name).text = xml_safe(value)
     add(channel, "title", "Mehlman Medical – Complete Free Video Qbank")
     add(channel, "link", BASE)
-    add(channel, "description", "Numbered Mehlman Qbank archive with full content where available. Dates prefer matched podcast episodes, with saved website dates as fallback.")
+    add(channel, "description", "Numbered Mehlman Qbank archive with full content where available. Dates use URL-matched WordPress publication records, retaining saved dates for posts no longer in the category.")
     add(channel, "language", "en")
     add(channel, "lastBuildDate", format_datetime(now()))
     add(channel, "generator", "mehlman-qbank-rss")
