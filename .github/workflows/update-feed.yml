@@ -16,6 +16,7 @@ on:
 
   schedule:
     - cron: "17 */6 * * *"
+    - cron: "47 3 * * 0"
 
 permissions:
   contents: write
@@ -45,7 +46,7 @@ jobs:
       - name: Build RSS feed
         id: build
         env:
-          FULL_RESCAN: ${{ inputs.full_rescan }}
+          FULL_RESCAN: ${{ inputs.full_rescan || github.event.schedule == '47 3 * * 0' }}
           REFRESH_CONTENT: ${{ inputs.refresh_content }}
         shell: bash
         run: |
@@ -104,9 +105,6 @@ jobs:
           if len(posts) != len(items):
               raise SystemExit("Feed and archive counts differ.")
 
-          content_tag = (
-              "{http://purl.org/rss/1.0/modules/content/}encoded"
-          )
           full_content = sum(
               bool(post.get("content_html", "").strip())
               for post in posts
