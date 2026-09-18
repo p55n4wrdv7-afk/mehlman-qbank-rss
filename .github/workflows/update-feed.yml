@@ -2,6 +2,18 @@ name: Update Mehlman Qbank RSS
 
 on:
   workflow_dispatch:
+    inputs:
+      full_rescan:
+        description: "Check every archive page for missing posts"
+        required: false
+        default: false
+        type: boolean
+      refresh_content:
+        description: "Refresh article content older than 30 days"
+        required: false
+        default: false
+        type: boolean
+
   schedule:
     - cron: "17 */6 * * *"
 
@@ -16,6 +28,8 @@ concurrency:
 jobs:
   update:
     runs-on: ubuntu-latest
+    timeout-minutes: 180
+
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
@@ -26,18 +40,97 @@ jobs:
           python-version: "3.12"
 
       - name: Install dependencies
-        run: pip install -r requirements.txt
+        run: python -m pip install -r requirements.txt
 
       - name: Build RSS feed
-        run: python scripts/build_feed.py
-
-      - name: Commit updated archive/feed
+        id: build
+        env:
+          FULL_RESCAN: ${{ inputs.full_rescan }}
+          REFRESH_CONTENT: ${{ inputs.refresh_content }}
+        shell: bash
         run: |
+          set -euo pipefail
+          args=()
+
+          if [[ "$FULL_RESCAN" == "true" ]]; then
+            args+=(--full)
+          fi
+
+          if [[ "$REFRESH_CONTENT" == "true" ]]; then
+            args+=(--refresh-days 30)
+          fi
+
+          python -u scripts/build_feed.py "${args[@]}"
+
+      - name: Validate feed and archive
+        run: |
+          python - <<'PY'
+          import json
+          import xml.etree.ElementTree as ET
+          from pathlib import Path
+
+          posts = json.loads(
+              Path("data/posts.json").read_text(encoding="utf-8")
+          )
+          root = ET.parse("docs/feed.xml").getroot()
+          items = root.findall("./channel/item")
+
+          if root.tag != "rss" or not items:
+              raise SystemExit("Feed is empty or is not RSS.")
+
+          for field in ("guid", "link"):
+              values = [
+                  (item.findtext(field) or "").strip()
+                  for item in items
+              ]
+              if not all(values):
+                  raise SystemExit(f"Missing {field} in feed.")
+              if len(values) != len(set(values)):
+                  raise SystemExit(f"Duplicate {field} in feed.")
+
+          if any(not (item.findtext("title") or "").strip()
+                 for item in items):
+              raise SystemExit("An item has no title.")
+
+          archive_urls = [post["url"] for post in posts]
+          feed_urls = [item.findtext("link") for item in items]
+
+          if len(archive_urls) != len(set(archive_urls)):
+              raise SystemExit("Duplicate URLs in saved archive.")
+
+          if set(archive_urls) != set(feed_urls):
+              raise SystemExit("Feed and saved archive do not match.")
+
+          if len(posts) != len(items):
+              raise SystemExit("Feed and archive counts differ.")
+
+          content_tag = (
+              "{http://purl.org/rss/1.0/modules/content/}encoded"
+          )
+          full_content = sum(
+              bool(post.get("content_html", "").strip())
+              for post in posts
+          )
+          missing_dates = sum(
+              not item.findtext("pubDate") for item in items
+          )
+
+          print(f"Validated {len(items)} unique RSS items.")
+          print(f"{full_content} saved articles contain HTML.")
+          print(f"{missing_dates} items have no publication date.")
+          PY
+
+      - name: Commit validated archive and feed
+        run: |
+          set -euo pipefail
           git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git config user.email \
+            "41898282+github-actions[bot]@users.noreply.github.com"
+
           git add data/posts.json docs/feed.xml
+
           if git diff --cached --quiet; then
-            echo "No changes"
+            echo "No changes to commit."
           else
             git commit -m "Update Mehlman Qbank RSS"
             git push
@@ -46,4 +139,17 @@ jobs:
       - name: Publish updated Pages site
         env:
           GH_TOKEN: ${{ github.token }}
-        run: gh api --method POST "repos/${GITHUB_REPOSITORY}/pages/builds"
+        run: |
+          gh api --method POST \
+            "repos/${GITHUB_REPOSITORY}/pages/builds"
+
+      - name: Preserve files if the run fails
+        if: ${{ failure() || cancelled() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: mehlman-recovery-${{ github.run_id }}
+          path: |
+            data/posts.json
+            docs/feed.xml
+          if-no-files-found: warn
+          retention-days: 14
