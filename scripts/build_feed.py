@@ -1,13 +1,16 @@
 #!/usr/bin/env python3
+"""Build a permanent RSS archive. Run with --full to rescan every archive page."""
+import argparse
 import json
 import re
 import time
-from datetime import datetime, timezone
-from email.utils import format_datetime, parsedate_to_datetime
-from html import escape, unescape
-from pathlib import Path
-from urllib.parse import urljoin
 import xml.etree.ElementTree as ET
+from collections import Counter, defaultdict
+from datetime import datetime, timezone, timedelta
+from email.utils import format_datetime, parsedate_to_datetime
+from html import unescape
+from pathlib import Path
+from urllib.parse import urljoin, urlsplit, urlunsplit
 
 import requests
 from bs4 import BeautifulSoup
@@ -17,533 +20,313 @@ PODCAST_RSS = "https://anchor.fm/s/2447ab5c/podcast/rss"
 ROOT = Path(__file__).resolve().parents[1]
 DATA_FILE = ROOT / "data" / "posts.json"
 FEED_FILE = ROOT / "docs" / "feed.xml"
-
-USER_AGENT = "Mehlman-Qbank-RSS/3.0 (+personal RSS archive; polite crawler)"
 TIMEOUT = 30
-ARCHIVE_DELAY = 0.5
-POST_DELAY = 0.35
-
+CONTENT_NS = "http://purl.org/rss/1.0/modules/content/"
+ET.register_namespace("content", CONTENT_NS)
 session = requests.Session()
 session.headers.update({
-    "User-Agent": USER_AGENT,
+    "User-Agent": "Mehlman-Qbank-RSS/4.0 (+personal RSS archive; polite crawler)",
     "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
 })
 
 
-def get(url: str) -> str:
-    last_exc = None
-    for attempt in range(3):
+def now():
+    return datetime.now(timezone.utc)
+
+
+def clean(value):
+    return re.sub(r"\s+", " ", value or "").strip()
+
+
+def qnum(title):
+    match = re.search(r"\bQ\s*#?\s*(\d+)\b", title or "", re.I)
+    return int(match.group(1)) if match else None
+
+
+def date(raw):
+    if not isinstance(raw, str) or not raw.strip():
+        return None
+    for parser in (lambda s: datetime.fromisoformat(s.replace("Z", "+00:00")),
+                   parsedate_to_datetime):
         try:
-            r = session.get(url, timeout=TIMEOUT)
-            r.raise_for_status()
-            return r.text
-        except Exception as exc:
-            last_exc = exc
-            if attempt < 2:
-                time.sleep(2 * (attempt + 1))
-    raise last_exc
-
-
-def clean_text(s: str) -> str:
-    return re.sub(r"\s+", " ", s or "").strip()
-
-
-def qnum(title: str):
-    # Matches both "HY USMLE Q #1644" and older "Audio Qbank – Q321"
-    m = re.search(r"\bQ\s*#?\s*(\d+)\b", title or "", re.I)
-    return int(m.group(1)) if m else None
-
-
-def archive_url(page: int) -> str:
-    return BASE if page == 1 else f"{BASE}page/{page}/"
-
-
-def parse_archive(html: str):
-    soup = BeautifulSoup(html, "html.parser")
-    posts = []
-
-    candidates = soup.select("article")
-    if not candidates:
-        candidates = soup.select("h2, h3")
-
-    for node in candidates:
-        heading = node.select_one("h1, h2, h3") if hasattr(node, "select_one") else None
-        if heading is None and getattr(node, "name", None) in {"h2", "h3"}:
-            heading = node
-        if heading is None:
-            continue
-
-        a = heading.find("a", href=True)
-        if not a:
-            continue
-
-        title = clean_text(a.get_text(" ", strip=True))
-        number = qnum(title)
-        if number is None:
-            continue
-
-        url = urljoin(BASE, a["href"])
-        posts.append({
-            "title": title,
-            "url": url,
-            "qnum": number,
-        })
-
-    seen = set()
-    out = []
-    for p in posts:
-        if p["url"] not in seen:
-            seen.add(p["url"])
-            out.append(p)
-    return out
-
-
-def last_page(html: str) -> int:
-    soup = BeautifulSoup(html, "html.parser")
-    nums = []
-
-    for a in soup.find_all("a", href=True):
-        m = re.search(r"/page/(\d+)/?", a["href"])
-        if m:
-            nums.append(int(m.group(1)))
-
-    for el in soup.select(".page-numbers"):
-        txt = clean_text(el.get_text())
-        if txt.isdigit():
-            nums.append(int(txt))
-
-    return max(nums) if nums else 1
-
-
-def load_existing():
-    if not DATA_FILE.exists():
-        return []
-    try:
-        data = json.loads(DATA_FILE.read_text(encoding="utf-8"))
-        return data if isinstance(data, list) else []
-    except Exception:
-        return []
-
-
-def normalize_title(title):
-    """Normalize small punctuation/spacing differences for title matching."""
-    s = unescape(title or "")
-    s = (
-        s.replace("–", "-")
-         .replace("—", "-")
-         .replace("−", "-")
-         .replace("’", "'")
-         .replace("“", '"')
-         .replace("”", '"')
-    )
-    s = re.sub(r"\s+", " ", s).strip().lower()
-    # Make "# 247" and "#247" compare the same.
-    s = re.sub(r"#\s+", "#", s)
-    return s
-
-
-def fetch_podcast_publication_dates():
-    """
-    Use Mehlman's official podcast RSS as the date authority.
-
-    This is much better than the WordPress REST dates for this site:
-    the WordPress dates can reflect migration/re-import timestamps,
-    whereas the podcast RSS preserves the original episode chronology.
-    """
-    try:
-        r = session.get(
-            PODCAST_RSS,
-            timeout=TIMEOUT,
-            headers={
-                "User-Agent": USER_AGENT,
-                "Accept": "application/rss+xml, application/xml, text/xml, */*",
-            },
-        )
-        r.raise_for_status()
-
-        root = ET.fromstring(r.content)
-        items = root.findall(".//item")
-
-        by_title = {}
-        by_qnum = {}
-
-        for item in items:
-            title = clean_text(item.findtext("title") or "")
-            pub_raw = clean_text(item.findtext("pubDate") or "")
-            if not title or not pub_raw:
-                continue
-
-            try:
-                dt = parsedate_to_datetime(pub_raw)
-                if dt.tzinfo is None:
-                    dt = dt.replace(tzinfo=timezone.utc)
-                iso = dt.isoformat()
-            except Exception:
-                continue
-
-            key = normalize_title(title)
-            by_title.setdefault(key, []).append(iso)
-
-            number = qnum(title)
-            if number is not None:
-                by_qnum.setdefault(number, []).append((key, iso))
-
-        print(
-            f"Podcast RSS: loaded {len(items)} episodes, "
-            f"{len(by_title)} normalized titles"
-        )
-        return by_title, by_qnum
-
-    except Exception as exc:
-        print(f"WARNING: could not load podcast RSS publication dates: {exc}")
-        return {}, {}
-
-
-def repair_publication_dates(posts):
-    by_title, by_qnum = fetch_podcast_publication_dates()
-
-    if not by_title:
-        print("No podcast date map available; dates left unchanged.")
-        return posts
-
-    exact = 0
-    qmatch = 0
-    unmatched = 0
-
-    for post in posts:
-        # IMPORTANT: clear the bad WordPress-import timestamp first.
-        post["published"] = None
-
-        title_key = normalize_title(post.get("title"))
-        title_dates = by_title.get(title_key, [])
-
-        if len(title_dates) == 1:
-            post["published"] = title_dates[0]
-            exact += 1
-            continue
-
-        number = post.get("qnum")
-        candidates = by_qnum.get(number, []) if number is not None else []
-
-        # Only use q-number fallback when the podcast contains exactly
-        # one episode with that number. This avoids bad matches for known
-        # numbering anomalies such as duplicate #1423 entries.
-        if len(candidates) == 1:
-            post["published"] = candidates[0][1]
-            qmatch += 1
-        else:
-            unmatched += 1
-
-    print(
-        "Publication dates repaired from official podcast RSS: "
-        f"{exact} exact-title, {qmatch} unique-Q fallback, "
-        f"{unmatched} unmatched"
-    )
-    return posts
-
-
-def absolutize_content(content, page_url):
-    # Turn relative links/media into absolute URLs so they work inside NetNewsWire.
-    attrs = (
-        ("a", "href"),
-        ("img", "src"),
-        ("iframe", "src"),
-        ("source", "src"),
-        ("video", "src"),
-    )
-
-    for selector, attr in attrs:
-        for tag in content.find_all(selector):
-            value = tag.get(attr)
-
-            # Some embeds/images lazy-load from data-src.
-            if not value and tag.get("data-src"):
-                value = tag.get("data-src")
-                tag[attr] = value
-
-            if value:
-                tag[attr] = urljoin(page_url, value)
-
-    for img in content.find_all("img"):
-        if img.get("srcset"):
-            parts = []
-            for part in img["srcset"].split(","):
-                bits = part.strip().split()
-                if bits:
-                    bits[0] = urljoin(page_url, bits[0])
-                    parts.append(" ".join(bits))
-            img["srcset"] = ", ".join(parts)
-
-
-def extract_original_date(soup):
-    # Prefer the date shown for the post itself.
-    selectors = [
-        "time.entry-date[datetime]",
-        "time.published[datetime]",
-        "time[datetime]",
-        "[itemprop='datePublished'][datetime]",
-    ]
-
-    for selector in selectors:
-        node = soup.select_one(selector)
-        if node and node.get("datetime"):
-            raw = node["datetime"].strip()
-            try:
-                dt = datetime.fromisoformat(raw.replace("Z", "+00:00"))
-                if dt.tzinfo is None:
-                    dt = dt.replace(tzinfo=timezone.utc)
-                return dt.isoformat()
-            except Exception:
-                pass
-
-    meta = soup.find("meta", attrs={"property": "article:published_time"})
-    if meta and meta.get("content"):
-        raw = meta["content"].strip()
-        try:
-            dt = datetime.fromisoformat(raw.replace("Z", "+00:00"))
-            if dt.tzinfo is None:
-                dt = dt.replace(tzinfo=timezone.utc)
-            return dt.isoformat()
-        except Exception:
+            value = parser(raw.strip())
+            return value if value.tzinfo else value.replace(tzinfo=timezone.utc)
+        except (ValueError, TypeError, OverflowError):
             pass
-
     return None
 
 
-def extract_full_post(post):
-    html = get(post["url"])
-    soup = BeautifulSoup(html, "html.parser")
+def get(url):
+    for attempt in range(3):
+        try:
+            response = session.get(url, timeout=TIMEOUT)
+            response.raise_for_status()
+            return response.content
+        except requests.RequestException as exc:
+            status = exc.response.status_code if exc.response is not None else None
+            if attempt == 2 or (status and status != 429 and status < 500):
+                raise
+            time.sleep(2 ** (attempt + 1))
 
-    # Astra/WordPress normally places the actual article body here.
-    content = (
-        soup.select_one("article .entry-content")
-        or soup.select_one(".entry-content")
-        or soup.select_one("article .post-content")
-        or soup.select_one(".post-content")
-    )
 
-    if content is None:
-        raise RuntimeError(f"Could not find article body: {post['url']}")
+def url_key(url):
+    parts = urlsplit(url)
+    if parts.hostname in {"mehlmanmedical.com", "www.mehlmanmedical.com"}:
+        return urlunsplit(("https", "mehlmanmedical.com",
+                          parts.path.rstrip("/") + "/", "", ""))
+    return urlunsplit((parts.scheme, parts.netloc, parts.path, parts.query, ""))
 
-    # Remove things that should not be syndicated, while KEEPING iframe/video.
-    for bad in content.select(
-        "script, style, noscript, form, "
-        ".sharedaddy, .jp-relatedposts, .post-navigation, "
-        ".navigation, .comments-area"
+
+def atomic_write(path, text):
+    path.parent.mkdir(parents=True, exist_ok=True)
+    temporary = path.with_suffix(path.suffix + ".tmp")
+    temporary.write_text(text, encoding="utf-8")
+    temporary.replace(path)
+
+
+def save(posts):
+    atomic_write(DATA_FILE, json.dumps(posts, ensure_ascii=False, indent=2) + "\n")
+
+
+def load():
+    if not DATA_FILE.exists():
+        return []
+    posts = json.loads(DATA_FILE.read_text(encoding="utf-8"))
+    if not isinstance(posts, list) or any(
+        not isinstance(p, dict) or not p.get("url") or not p.get("title")
+        for p in posts
     ):
-        bad.decompose()
-
-    absolutize_content(content, post["url"])
-
-    # Remove empty paragraphs but keep media wrappers.
-    for p in list(content.find_all("p")):
-        if not p.get_text(strip=True) and not p.find(["img", "iframe", "video", "audio"]):
-            p.decompose()
-
-    content_html = content.decode_contents(formatter="html").strip()
-    if not content_html:
-        raise RuntimeError(f"Article body was empty: {post['url']}")
-
-    # Refresh title from the individual page when possible.
-    title_node = soup.select_one("article h1.entry-title, h1.entry-title, article h1")
-    title = clean_text(title_node.get_text(" ", strip=True)) if title_node else post.get("title", "")
-
-    return {
-        **post,
-        "title": title or post.get("title", ""),
-        "qnum": qnum(title) or post.get("qnum"),
-        "published": extract_original_date(soup) or post.get("published"),
-        "content_html": content_html,
-    }
-
-
-def discover_posts(existing):
-    existing_by_url = {p["url"]: p for p in existing if p.get("url")}
-
-    first_html = get(BASE)
-
-    if not existing:
-        total_pages = last_page(first_html)
-        print(f"Initial archive discovery: {total_pages} pages")
-        found = []
-
-        for page in range(1, total_pages + 1):
-            html = first_html if page == 1 else get(archive_url(page))
-            batch = parse_archive(html)
-            print(f"archive page {page}/{total_pages}: {len(batch)} numbered Qbank posts")
-            found.extend(batch)
-            if page != total_pages:
-                time.sleep(ARCHIVE_DELAY)
-    else:
-        print(f"Incremental archive discovery: {len(existing)} saved posts")
-        found = []
-        page = 1
-        consecutive_known_pages = 0
-        max_pages = 20
-
-        while page <= max_pages:
-            html = first_html if page == 1 else get(archive_url(page))
-            batch = parse_archive(html)
-            found.extend(batch)
-
-            urls = [p["url"] for p in batch]
-            known = sum(1 for u in urls if u in existing_by_url)
-            print(f"archive page {page}: {len(batch)} posts, {known} already known")
-
-            if batch and known == len(batch):
-                consecutive_known_pages += 1
-            else:
-                consecutive_known_pages = 0
-
-            if consecutive_known_pages >= 2:
-                break
-
-            page += 1
-            time.sleep(ARCHIVE_DELAY)
-
-    merged = dict(existing_by_url)
-
-    for p in found:
-        old = merged.get(p["url"], {})
-        merged[p["url"]] = {
-            **old,
-            "title": p.get("title") or old.get("title", ""),
-            "url": p["url"],
-            "qnum": p.get("qnum") if p.get("qnum") is not None else old.get("qnum"),
-        }
-
+        raise ValueError("Invalid posts.json; refusing to overwrite the saved archive")
+    merged = {}
+    for post in posts:
+        key = url_key(post["url"])
+        if key in merged:
+            # Keep the first saved URL/GUID so existing subscriptions stay stable.
+            original_url = merged[key]["url"]
+            merged[key].update({k: v for k, v in post.items() if v is not None and v != ""})
+            merged[key]["url"] = original_url
+        else:
+            merged[key] = dict(post)
     return list(merged.values())
 
 
-def backfill_full_content(posts):
-    pending = [
-        p for p in posts
-        if not p.get("content_html")
-        or "Open the original Mehlman Medical post." in p.get("content_html", "")
-    ]
+def archive(html):
+    soup = BeautifulSoup(html, "html.parser")
+    posts = {}
+    for node in soup.select("article") or soup.select("h2, h3"):
+        heading = node if node.name in {"h2", "h3"} else node.select_one("h1, h2, h3")
+        anchor = heading.find("a", href=True) if heading else None
+        if not anchor:
+            continue
+        title = clean(anchor.get_text(" ", strip=True))
+        number = qnum(title)
+        if number is not None:
+            url = url_key(urljoin(BASE, anchor["href"]))
+            posts[url] = {"url": url, "title": title, "qnum": number}
+    pages = [1]
+    for anchor in soup.find_all("a", href=True):
+        match = re.search(r"^" + re.escape(BASE) + r"page/(\d+)/?$",
+                          urljoin(BASE, anchor["href"]))
+        if match:
+            pages.append(int(match.group(1)))
+    return list(posts.values()), max(pages), bool(soup.select("article"))
 
-    print(f"{len(pending)} posts need full article content")
 
-    by_url = {p["url"]: p for p in posts if p.get("url")}
+def discover(existing, full=False):
+    merged = {url_key(p["url"]): dict(p) for p in existing}
+    known = set(merged)
+    first = get(BASE)
+    first_posts, total, _ = archive(first)
+    if not first_posts:
+        raise RuntimeError("No Qbank entries on page 1; refusing to publish")
+    full = full or not existing
+    seen = set()
+    known_pages = 0
+    for page in range(1, total + 1):
+        html = first if page == 1 else get(f"{BASE}page/{page}/")
+        batch, _, has_articles = archive(html)
+        if not batch and not has_articles:
+            raise RuntimeError(f"Archive page {page} has no recognizable posts")
+        keys = {url_key(p["url"]) for p in batch}
+        if keys and keys.issubset(seen):
+            raise RuntimeError(f"Archive page {page} repeats earlier entries; check pagination")
+        seen.update(keys)
+        for post in batch:
+            key = url_key(post["url"])
+            old = merged.get(key, {})
+            merged[key] = {**old, **post, "url": old.get("url", post["url"])}
+        print(f"Archive {page}/{total}: {len(batch)} numbered posts", flush=True)
+        known_pages = known_pages + 1 if keys and keys.issubset(known) else 0
+        if not full and known_pages >= 2:
+            break
+        if page < total:
+            time.sleep(0.5)
+    print(f"Discovered {len(seen)} unique URLs; preserving {len(merged)} total posts")
+    return list(merged.values())
 
-    for i, p in enumerate(pending, start=1):
+
+def original_date(soup):
+    for node in soup.select("time.entry-date[datetime], time.published[datetime], "
+                            "[itemprop='datePublished'][datetime], "
+                            "meta[property='article:published_time']"):
+        value = date(node.get("datetime") or node.get("content"))
+        if value:
+            return value.isoformat()
+    return None
+
+
+def full_post(post):
+    soup = BeautifulSoup(get(post["url"]), "html.parser")
+    body = soup.select_one("article .entry-content, .entry-content, article .post-content, .post-content")
+    if body is None:
+        raise RuntimeError("Article body not found")
+    for node in body.select("script, style, noscript, form, .sharedaddy, .jp-relatedposts, "
+                            ".post-navigation, .navigation, .comments-area"):
+        node.decompose()
+    for tag, attribute in (("a", "href"), ("img", "src"), ("iframe", "src"),
+                           ("source", "src"), ("video", "src"), ("audio", "src"),
+                           ("video", "poster")):
+        for node in body.find_all(tag):
+            value = node.get(attribute) or (node.get("data-src") if attribute == "src" else None)
+            if value:
+                node[attribute] = urljoin(post["url"], value)
+    for node in body.select("img[srcset], source[srcset]"):
+        # src remains the reliable fallback; avoid malformed relative srcset URLs.
+        del node["srcset"]
+    content = body.decode_contents(formatter="html").strip()
+    if not content:
+        raise RuntimeError("Article body is empty")
+    result = {**post, "content_html": content, "content_fetched_at": now().isoformat()}
+    title = soup.select_one("article h1.entry-title, h1.entry-title, article h1")
+    if title and qnum(clean(title.get_text(" ", strip=True))) is not None:
+        result["title"] = clean(title.get_text(" ", strip=True))
+        result["qnum"] = qnum(result["title"])
+    website_date = original_date(soup)
+    if website_date:
+        result["website_published"] = website_date
+        if not date(result.get("published")):
+            result.update(published=website_date, date_source="website")
+    result.pop("fetch_error", None)
+    return result
+
+
+def backfill(posts, refresh_days):
+    cutoff = now() - timedelta(days=refresh_days) if refresh_days else None
+    failures = 0
+    for index, post in enumerate(posts):
+        fetched = date(post.get("content_fetched_at"))
+        missing = not post.get("content_html", "").strip() or "Open the original Mehlman Medical post." in post.get("content_html", "")
+        stale = cutoff is not None and (fetched is None or fetched < cutoff)
+        if not missing and not stale:
+            continue
         try:
-            full = extract_full_post(p)
-            by_url[p["url"]] = full
-            print(f"[{i}/{len(pending)}] OK {full.get('title', p['url'])}")
-        except Exception as exc:
-            # Keep the post in the archive, but do NOT pretend this is complete.
-            old = by_url[p["url"]]
-            old["fetch_error"] = str(exc)
-            print(f"[{i}/{len(pending)}] ERROR {p['url']}: {exc}")
-
-        # Save progress continuously. If GitHub ever interrupts a long first run,
-        # the next run can continue rather than starting over after a commit.
-        if i % 25 == 0:
-            save_posts(list(by_url.values()))
-
-        time.sleep(POST_DELAY)
-
-    return list(by_url.values())
+            posts[index] = full_post(post)
+        except (requests.RequestException, RuntimeError) as exc:
+            post["fetch_error"] = str(exc)
+            failures += 1
+            print(f"WARNING: {post['url']}: {exc}", flush=True)
+        if (index + 1) % 25 == 0:
+            save(posts)  # Local checkpoint; workflow must commit it to survive a new runner.
+        time.sleep(0.35)
+    print(f"Content fetch failures: {failures}")
+    return posts
 
 
-def save_posts(posts):
-    DATA_FILE.parent.mkdir(parents=True, exist_ok=True)
-    DATA_FILE.write_text(
-        json.dumps(posts, indent=2, ensure_ascii=False) + "\n",
-        encoding="utf-8",
-    )
+def normalized(title):
+    title = unescape(title or "").lower()
+    title = re.sub(r"[–—−]", "-", title).replace("’", "'").replace("“", '"').replace("”", '"')
+    return re.sub(r"#\s+", "#", clean(title))
 
 
-def to_datetime(raw):
-    if not raw:
-        return None
-
+def repair_dates(posts):
     try:
-        dt = datetime.fromisoformat(raw.replace("Z", "+00:00"))
-        if dt.tzinfo is None:
-            dt = dt.replace(tzinfo=timezone.utc)
-        return dt
-    except Exception:
-        pass
+        root = ET.fromstring(get(PODCAST_RSS))
+        titles, numbers = defaultdict(set), defaultdict(set)
+        for item in root.findall(".//item"):
+            title = normalized(item.findtext("title"))
+            value = date(item.findtext("pubDate"))
+            if title and value:
+                iso = value.isoformat()
+                titles[title].add(iso)
+                number = qnum(title)
+                if number is not None:
+                    numbers[number].add((title, iso))
+    except (requests.RequestException, ET.ParseError) as exc:
+        print(f"WARNING: podcast unavailable; keeping saved dates: {exc}")
+        return
+    counts = Counter(qnum(p["title"]) for p in posts)
+    matched = 0
+    for post in posts:
+        title = normalized(post["title"])
+        matches = titles.get(title, set())
+        source = "podcast-title"
+        number = qnum(post["title"])
+        if len(matches) != 1:
+            candidates = numbers.get(number, set())
+            matches = {next(iter(candidates))[1]} if counts[number] == 1 and len(candidates) == 1 else set()
+            source = "podcast-number"
+        if len(matches) == 1:
+            if post.get("published") and "previous_published" not in post:
+                post["previous_published"] = post["published"]
+            post.update(published=next(iter(matches)), date_source=source)
+            matched += 1
+        # Unmatched posts retain their saved dates, including their provenance.
+    print(f"Podcast dates matched: {matched}/{len(posts)}; unmatched dates preserved")
 
-    try:
-        dt = parsedate_to_datetime(raw)
-        if dt.tzinfo is None:
-            dt = dt.replace(tzinfo=timezone.utc)
-        return dt
-    except Exception:
-        return None
 
-
-def cdata(value):
-    return (value or "").replace("]]>", "]]]]><![CDATA[>")
+def xml_safe(value):
+    return "".join(c for c in str(value or "") if c in "\t\n\r" or
+                   0x20 <= ord(c) <= 0xD7FF or 0xE000 <= ord(c) <= 0xFFFD or
+                   0x10000 <= ord(c) <= 0x10FFFF)
 
 
 def build_feed(posts):
-    FEED_FILE.parent.mkdir(parents=True, exist_ok=True)
-    build_dt = datetime.now(timezone.utc)
-
-    # Newest Q number first, matching the Qbank sequence.
-    posts.sort(key=lambda p: p.get("qnum") or -1, reverse=True)
-
-    items = []
+    if not posts or len({url_key(p["url"]) for p in posts}) != len(posts):
+        raise ValueError("Refusing to publish an empty feed or duplicate URLs")
+    root = ET.Element("rss", version="2.0")
+    channel = ET.SubElement(root, "channel")
+    def add(parent, name, value):
+        ET.SubElement(parent, name).text = xml_safe(value)
+    add(channel, "title", "Mehlman Medical – Complete Free Video Qbank")
+    add(channel, "link", BASE)
+    add(channel, "description", "Numbered Mehlman Qbank archive with full content where available. Dates prefer matched podcast episodes, with saved website dates as fallback.")
+    add(channel, "language", "en")
+    add(channel, "lastBuildDate", format_datetime(now()))
+    add(channel, "generator", "mehlman-qbank-rss")
     full_count = 0
-
-    for p in posts:
-        title = escape(p.get("title", ""), quote=False)
-        link = escape(p.get("url", ""), quote=True)
-        dt = to_datetime(p.get("published"))
-        pub_date_xml = (
-            f"      <pubDate>{format_datetime(dt)}</pubDate>\n"
-            if dt is not None
-            else ""
-        )
-
-        html = p.get("content_html", "").strip()
+    for post in sorted(posts, key=lambda p: qnum(p["title"]) or -1, reverse=True):
+        item = ET.SubElement(channel, "item")
+        add(item, "title", post["title"])
+        add(item, "link", post["url"])
+        ET.SubElement(item, "guid", isPermaLink="true").text = xml_safe(post["url"])
+        published = date(post.get("published"))
+        if published:
+            add(item, "pubDate", format_datetime(published))
+        html = post.get("content_html", "").strip()
         if html:
             full_count += 1
         else:
-            html = (
-                f'<p><a href="{link}">'
-                "Open the original Mehlman Medical post."
-                "</a></p>"
-            )
-
-        html = cdata(html)
-
-        items.append(f"""    <item>
-      <title>{title}</title>
-      <link>{link}</link>
-      <guid isPermaLink="true">{link}</guid>
-{pub_date_xml}      <description><![CDATA[{html}]]></description>
-      <content:encoded><![CDATA[{html}]]></content:encoded>
-    </item>""")
-
-    xml = f"""<?xml version="1.0" encoding="UTF-8"?>
-<rss version="2.0"
-     xmlns:content="http://purl.org/rss/1.0/modules/content/">
-  <channel>
-    <title>Mehlman Medical – Complete Free Video Qbank</title>
-    <link>{BASE}</link>
-    <description>Complete historical archive of numbered Mehlman Medical Free Video Qbank posts with full article content and original publication dates, automatically updated.</description>
-    <language>en</language>
-    <lastBuildDate>{format_datetime(build_dt)}</lastBuildDate>
-    <generator>mehlman-qbank-rss</generator>
-{chr(10).join(items)}
-  </channel>
-</rss>
-"""
-
-    FEED_FILE.write_text(xml, encoding="utf-8")
-    print(f"Wrote {len(posts)} items; {full_count} contain full article HTML")
+            html = "Open the original Mehlman Medical post using the article link."
+        add(item, "description", html)
+        add(item, f"{{{CONTENT_NS}}}encoded", html)
+    xml = ET.tostring(root, encoding="utf-8", xml_declaration=True)
+    ET.fromstring(xml)  # Validate before replacing the published file.
+    atomic_write(FEED_FILE, xml.decode("utf-8") + "\n")
+    print(f"RSS verified: {len(posts)} unique items; {full_count} with article HTML")
 
 
 def main():
-    existing = load_existing()
-    posts = discover_posts(existing)
-    posts = backfill_full_content(posts)
-    save_posts(posts)
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--full", action="store_true", help="Rescan all archive pages, preserving saved posts")
+    parser.add_argument("--refresh-days", type=int, default=0,
+                        help="Refresh content older than N days; 0 only fetches missing content")
+    args = parser.parse_args()
+    if args.refresh_days < 0:
+        parser.error("--refresh-days must be zero or positive")
+    posts = discover(load(), full=args.full)
+    posts = backfill(posts, args.refresh_days)
+    repair_dates(posts)
+    save(posts)
     build_feed(posts)
 
 
