@@ -15146,5 +15146,15 @@
     "date_source": "wordpress-api",
     "previous_published": "2026-09-14T20:17:35+09:00",
     "date_source_url": "https://mehlmanmedical.com/wp-json/wp/v2/posts/37534"
+  },
+  {
+    "url": "https://mehlmanmedical.com/hy-usmle-q-1646-gastro/",
+    "title": "HY USMLE Q #1646 – Gastro",
+    "qnum": 1646,
+    "content_html": "<p style=\"text-align: center;\"><iframe allowfullscreen=\"allowfullscreen\" height=\"314\" src=\"https://www.youtube.com/embed/ks-UfEkHSOA\" width=\"560\"></iframe></p>\n<p>A 49-year-old man comes to the physician for a follow-up appointment. Stool is positive for staining with Oil Red O and Sudan Black. Laboratory studies show direct bilirubin, ALP, amylase, and lipase within the normal range.</p>\n<p><img alt=\"\" class=\"alignnone wp-image-37552\" data-recalc-dims=\"1\" decoding=\"async\" fetchpriority=\"high\" height=\"381\" sizes=\"(max-width: 515px) 100vw, 515px\" src=\"https://i0.wp.com/mehlmanmedical.com/wp-content/uploads/2026/09/Screenshot-2026-09-20-at-11.56.36-AM.png?resize=515%2C381&amp;ssl=1\" width=\"515\"/></p>\n<p>Which of the following is the most likely explanation for this patient&rsquo;s findings?</p>\n<p>A) Acute cholecystitis<br/>\nB) Chronic cholecystitis<br/>\nC) Acute pancreatitis<br/>\nD) Chronic pancreatitis<br/>\nE) Porcelain gallbladder</p>",
+    "content_fetched_at": "2026-09-20T12:31:18.215907+00:00",
+    "published": "2026-09-20T11:53:18+00:00",
+    "date_source": "wordpress-api",
+    "date_source_url": "https://mehlmanmedical.com/wp-json/wp/v2/posts/37551"
   }
 ]
