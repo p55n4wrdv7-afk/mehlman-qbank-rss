@@ -15157,5 +15157,15 @@
     "date_source": "wordpress-api",
     "date_source_url": "https://mehlmanmedical.com/wp-json/wp/v2/posts/37551",
     "previous_published": "2026-09-20T11:53:18+00:00"
+  },
+  {
+    "url": "https://mehlmanmedical.com/hy-usmle-q-1647-renal/",
+    "title": "HY USMLE Q #1647 – Renal",
+    "qnum": 1647,
+    "content_html": "<p style=\"text-align: center;\"><iframe allowfullscreen=\"allowfullscreen\" height=\"314\" src=\"https://www.youtube.com/embed/MRI8ennngnQ\" width=\"560\"></iframe></p>\n<p>A 53-year-old man is evaluated in hospital. Scattered petechiae and ecchymoses are noted on his forearms. There is mild bilateral pedal edema. A renal biopsy is shown.</p>\n<p><img alt=\"\" class=\"alignnone wp-image-37567\" data-recalc-dims=\"1\" decoding=\"async\" fetchpriority=\"high\" height=\"292\" sizes=\"(max-width: 374px) 100vw, 374px\" src=\"https://i0.wp.com/mehlmanmedical.com/wp-content/uploads/2026/09/Screenshot-2026-09-21-at-7.27.05-PM.png?resize=374%2C292&amp;ssl=1\" width=\"374\"/></p>\n<p>Which of the following is most likely to be seen in this patient?</p>\n<p>A) BUN/Cr of 22<br/>\nB) 1+ blood on urine dipstick + 0-1 RBCs/hpf<br/>\nC) 1+ blood on urine dipstick + 20 RBCs/hpf<br/>\nD) Insulin resistance<br/>\nE) Platelet count of 50,000/&mu;L</p>",
+    "content_fetched_at": "2026-09-21T12:31:06.614550+00:00",
+    "published": "2026-09-21T12:00:47+00:00",
+    "date_source": "wordpress-api",
+    "date_source_url": "https://mehlmanmedical.com/wp-json/wp/v2/posts/37566"
   }
 ]
