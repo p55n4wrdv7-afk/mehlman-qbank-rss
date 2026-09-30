@@ -15201,5 +15201,15 @@
     "date_source": "wordpress-api",
     "date_source_url": "https://mehlmanmedical.com/wp-json/wp/v2/posts/37661",
     "previous_published": "2026-09-29T14:09:57+00:00"
+  },
+  {
+    "url": "https://mehlmanmedical.com/hy-usmle-q-1651-cardio/",
+    "title": "HY USMLE Q #1651 – Cardio",
+    "qnum": 1651,
+    "content_html": "<p style=\"text-align: center;\"><iframe allowfullscreen=\"allowfullscreen\" height=\"314\" src=\"https://www.youtube.com/embed/p7WCR5ZvPzw\" width=\"560\"></iframe></p>\n<p>A 50-year-old woman is evaluated in hospital. Her cardiopulmonary auscultatory findings are shown.</p>\n<p><img alt=\"\" class=\"alignnone wp-image-37676\" data-recalc-dims=\"1\" decoding=\"async\" height=\"179\" sizes=\"(max-width: 228px) 100vw, 228px\" src=\"https://i0.wp.com/mehlmanmedical.com/wp-content/uploads/2026/09/Screenshot-2026-09-30-at-6.47.43-PM.png?resize=228%2C179&amp;ssl=1\" width=\"228\"/></p>\n<p>Which of the following is the most likely explanation for this patient&rsquo;s findings?</p>\n<p>A) Alcoholism<br/>\nB) Endocardial fibroelastosis<br/>\nC) History of radiation to the chest<br/>\nD) Hyperthyroidism<br/>\nE) Multiple myeloma</p>",
+    "content_fetched_at": "2026-09-30T12:40:02.291068+00:00",
+    "published": "2026-09-30T11:32:25+00:00",
+    "date_source": "wordpress-api",
+    "date_source_url": "https://mehlmanmedical.com/wp-json/wp/v2/posts/37675"
   }
 ]
