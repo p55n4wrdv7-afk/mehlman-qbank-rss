@@ -15212,5 +15212,15 @@
     "date_source": "wordpress-api",
     "date_source_url": "https://mehlmanmedical.com/wp-json/wp/v2/posts/37675",
     "previous_published": "2026-09-30T11:32:25+00:00"
+  },
+  {
+    "url": "https://mehlmanmedical.com/hy-usmle-q-1652-hematology/",
+    "title": "HY USMLE Q #1652 – Hematology",
+    "qnum": 1652,
+    "content_html": "<p style=\"text-align: center;\"><iframe allowfullscreen=\"allowfullscreen\" height=\"314\" src=\"https://www.youtube.com/embed/2P6la0kcdP8\" width=\"560\"></iframe></p>\n<p>A 30-year-old woman is evaluated as part of a research study. A change occurs as represented by the blue arrow.</p>\n<p><img alt=\"\" class=\"alignnone wp-image-37690\" data-recalc-dims=\"1\" decoding=\"async\" fetchpriority=\"high\" height=\"359\" sizes=\"(max-width: 456px) 100vw, 456px\" src=\"https://i0.wp.com/mehlmanmedical.com/wp-content/uploads/2026/10/Screenshot-2026-10-01-at-6.50.25-PM.png?resize=456%2C359&amp;ssl=1\" width=\"456\"/></p>\n<p>Which of the following is most likely to explain the change in this patient?</p>\n<p>A) Decreased acid anhydride<br/>\nB) Increased hydrophobic interactions<br/>\nC) More salt bridges<br/>\nD) More serine residues<br/>\nE) Decreased temperature</p>",
+    "content_fetched_at": "2026-10-01T18:35:58.539523+00:00",
+    "published": "2026-10-01T13:43:05+00:00",
+    "date_source": "wordpress-api",
+    "date_source_url": "https://mehlmanmedical.com/wp-json/wp/v2/posts/37689"
   }
 ]
