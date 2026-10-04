@@ -15223,5 +15223,15 @@
     "date_source": "wordpress-api",
     "date_source_url": "https://mehlmanmedical.com/wp-json/wp/v2/posts/37689",
     "previous_published": "2026-10-01T13:43:05+00:00"
+  },
+  {
+    "url": "https://mehlmanmedical.com/hy-usmle-q-1653-neuro/",
+    "title": "HY USMLE Q #1653 – Neuro",
+    "qnum": 1653,
+    "content_html": "<p style=\"text-align: center;\"><iframe allowfullscreen=\"allowfullscreen\" height=\"314\" src=\"https://www.youtube.com/embed/jLA535s4-1A\" width=\"560\"></iframe></p>\n<p>A 59-year-old man is brought to hospital by his wife after 24 hours of progressive neurologic disturbances. Examination shows ptosis of the left eyelid and a 1-mm left pupil. There is loss of pain and temperature of the left side of his face and the right side of his body. His voice is very hoarse and raspy. An infarct at which of the following locations is the most likely explanation for this patient&rsquo;s findings?</p>\n<p>A) Left anterior inferior cerebellar artery<br/>\nB) Left paramedian branches of anterior spinal artery<br/>\nC) Left posterior inferior cerebellar artery<br/>\nD) Right anterior inferior cerebellar artery<br/>\nE) Right paramedian branches of anterior spinal artery<br/>\nF) Right posterior inferior cerebellar artery</p>",
+    "content_fetched_at": "2026-10-04T13:40:21.912515+00:00",
+    "published": "2026-10-04T11:23:57+00:00",
+    "date_source": "wordpress-api",
+    "date_source_url": "https://mehlmanmedical.com/wp-json/wp/v2/posts/37715"
   }
 ]
