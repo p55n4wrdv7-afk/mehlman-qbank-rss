@@ -15234,5 +15234,15 @@
     "date_source": "wordpress-api",
     "date_source_url": "https://mehlmanmedical.com/wp-json/wp/v2/posts/37715",
     "previous_published": "2026-10-04T11:23:57+00:00"
+  },
+  {
+    "url": "https://mehlmanmedical.com/hy-usmle-q-1654-endocrine/",
+    "title": "HY USMLE Q #1654 – Endocrine",
+    "qnum": 1654,
+    "content_html": "<p style=\"text-align: center;\"><iframe allowfullscreen=\"allowfullscreen\" height=\"314\" src=\"https://www.youtube.com/embed/shvn2pq1Tig\" width=\"560\"></iframe></p>\n<p>A 40-year-old man comes to the physician for a follow-up appointment. His brother has rheumatoid arthritis. Laboratory findings are shown:</p>\n<p>Sodium&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 138 mEq/L<br/>\nPotassium&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 6.0 mEq/L<br/>\nCalcium&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;8.8 mg/dL<br/>\nPhosphate&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;4.1 mEq/L<br/>\nBicarbonate&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;20 mEq/L</p>\n<p>Which of the following is most likely to be seen in this patient?</p>\n<p>A) Decreased parathyroid hormone<br/>\nB) Decreased urinary calcium<br/>\nC) Increased adrenocorticotropic hormone<br/>\nD) Kaliuresis<br/>\nE) Zona glomerulosa adenoma</p>",
+    "content_fetched_at": "2026-10-08T12:40:01.176686+00:00",
+    "published": "2026-10-08T11:29:15+00:00",
+    "date_source": "wordpress-api",
+    "date_source_url": "https://mehlmanmedical.com/wp-json/wp/v2/posts/37961"
   }
 ]
