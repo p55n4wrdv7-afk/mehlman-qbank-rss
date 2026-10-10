@@ -15245,5 +15245,15 @@
     "date_source": "wordpress-api",
     "date_source_url": "https://mehlmanmedical.com/wp-json/wp/v2/posts/37961",
     "previous_published": "2026-10-08T11:29:15+00:00"
+  },
+  {
+    "url": "https://mehlmanmedical.com/hy-usmle-q-1655-hematology/",
+    "title": "HY USMLE Q #1655 – Hematology",
+    "qnum": 1655,
+    "content_html": "<p style=\"text-align: center;\"><iframe allowfullscreen=\"allowfullscreen\" height=\"314\" src=\"https://www.youtube.com/embed/YPzj5J_c-UU\" width=\"560\"></iframe></p>\n<p>A 48-year-old man comes to the physician for a follow-up appointment. He has a 2-week history of blisters on his forearms that occurred after he took a long bike ride in a park. He has a long history of alcohol consumption and IV drug use. Decreased activity of which of following is the most likely explanation for this patient&rsquo;s presentation?</p>\n<p>A) Delta-aminolevulinic acid dehydratase<br/>\nB) Delta-aminolevulinic acid synthase<br/>\nC) Ferrochelatase<br/>\nD) Porphobilinogen deaminase<br/>\nE) Uroporphyrinogen decarboxylase</p>",
+    "content_fetched_at": "2026-10-10T12:35:18.275627+00:00",
+    "published": "2026-10-10T11:17:12+00:00",
+    "date_source": "wordpress-api",
+    "date_source_url": "https://mehlmanmedical.com/wp-json/wp/v2/posts/38108"
   }
 ]
