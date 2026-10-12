@@ -15256,5 +15256,15 @@
     "date_source": "wordpress-api",
     "date_source_url": "https://mehlmanmedical.com/wp-json/wp/v2/posts/38108",
     "previous_published": "2026-10-10T11:17:12+00:00"
+  },
+  {
+    "url": "https://mehlmanmedical.com/hy-usmle-q-1656-pathology/",
+    "title": "HY USMLE Q #1656 – Pathology",
+    "qnum": 1656,
+    "content_html": "<p style=\"text-align: center;\"><iframe allowfullscreen=\"allowfullscreen\" height=\"314\" src=\"https://www.youtube.com/embed/abb7s0cNdII\" width=\"560\"></iframe></p>\n<p>A 2-day-old newborn is evaluated for poor feeding and abnormal eye findings. Physical exam shows bilateral cloudy lenses, a pan-systolic pan-diastolic murmur, and numerous purplish-red skin lesions on the trunk and extremities. The infant fails the newborn hearing screening. Which of the following is most likely to have been seen in the mother during pregnancy?</p>\n<p>A) Arthritis<br/>\nB) Chancre<br/>\nC) Cowdry bodies<br/>\nD) Owl-eye inclusions<br/>\nE) Working in a pet store</p>",
+    "content_fetched_at": "2026-10-12T18:37:11.940707+00:00",
+    "published": "2026-10-12T14:05:40+00:00",
+    "date_source": "wordpress-api",
+    "date_source_url": "https://mehlmanmedical.com/wp-json/wp/v2/posts/38128"
   }
 ]
