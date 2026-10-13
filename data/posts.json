@@ -15265,6 +15265,7 @@
     "content_fetched_at": "2026-10-12T18:37:11.940707+00:00",
     "published": "2026-10-12T14:05:40+00:00",
     "date_source": "wordpress-api",
-    "date_source_url": "https://mehlmanmedical.com/wp-json/wp/v2/posts/38128"
+    "date_source_url": "https://mehlmanmedical.com/wp-json/wp/v2/posts/38128",
+    "previous_published": "2026-10-12T14:05:40+00:00"
   }
 ]
