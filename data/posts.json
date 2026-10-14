@@ -15267,5 +15267,15 @@
     "date_source": "wordpress-api",
     "date_source_url": "https://mehlmanmedical.com/wp-json/wp/v2/posts/38128",
     "previous_published": "2026-10-12T14:05:40+00:00"
+  },
+  {
+    "url": "https://mehlmanmedical.com/hy-usmle-q-1657-pharm/",
+    "title": "HY USMLE Q #1657 – Pharm",
+    "qnum": 1657,
+    "content_html": "<p style=\"text-align: center;\"><iframe allowfullscreen=\"allowfullscreen\" height=\"314\" src=\"https://www.youtube.com/embed/vZbTcv8mbFo\" width=\"560\"></iframe></p>\n<p>A 63-year-old man comes to the physician for a follow-up appointment. The physician recommends commencement of an agent that is both an anti-platelet agent and vasodilator. Which of the following is the most likely pharmacologic agent recommended by the physician?</p>\n<p>A) Aspirin<br/>\nB) Clopidogrel<br/>\nC) Dipyridamole<br/>\nD) Eptifibatide<br/>\nE) Tirofiban</p>",
+    "content_fetched_at": "2026-10-14T12:55:14.780650+00:00",
+    "published": "2026-10-14T11:42:58+00:00",
+    "date_source": "wordpress-api",
+    "date_source_url": "https://mehlmanmedical.com/wp-json/wp/v2/posts/38360"
   }
 ]
