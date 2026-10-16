@@ -15278,5 +15278,15 @@
     "date_source": "wordpress-api",
     "date_source_url": "https://mehlmanmedical.com/wp-json/wp/v2/posts/38360",
     "previous_published": "2026-10-14T11:42:58+00:00"
+  },
+  {
+    "url": "https://mehlmanmedical.com/hy-usmle-q-1658-immuno/",
+    "title": "HY USMLE Q #1658 – Immuno",
+    "qnum": 1658,
+    "content_html": "<p style=\"text-align: center;\"><iframe allowfullscreen=\"allowfullscreen\" height=\"314\" src=\"https://www.youtube.com/embed/Lqqo-IGFuIE\" width=\"560\"></iframe></p>\n<p>A 15-year-old boy is brought to the physician for a 2-day history of loose, foul-smelling stools. He has a long history of pneumonia, sinusitis, and otitis media since childhood. Current medications include albuterol and fluticasone inhalers. His mother had an episode of deQuervain thyroiditis last year. Results of a stool sample are shown.</p>\n<p><img alt=\"\" class=\"alignnone wp-image-38372\" data-recalc-dims=\"1\" decoding=\"async\" fetchpriority=\"high\" height=\"274\" sizes=\"(max-width: 421px) 100vw, 421px\" src=\"https://i0.wp.com/mehlmanmedical.com/wp-content/uploads/2026/10/Screenshot-2026-10-16-at-5.54.50-PM.png?resize=421%2C274&amp;ssl=1\" width=\"421\"/></p>\n<p>Which of the following is the most likely explanation for this patient&rsquo;s findings?</p>\n<p>A) Deficiency of CD40-Ligand<br/>\nB) Deficiency of cell-mediated immunity<br/>\nC) Deficiency of mucosal immunoglobulin<br/>\nD) IL-2 receptor mutation<br/>\nE) Tyrosine kinase mutation</p>",
+    "content_fetched_at": "2026-10-16T16:40:59.761781+00:00",
+    "published": "2026-10-16T15:04:53+00:00",
+    "date_source": "wordpress-api",
+    "date_source_url": "https://mehlmanmedical.com/wp-json/wp/v2/posts/38370"
   }
 ]
