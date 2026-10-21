@@ -15300,5 +15300,15 @@
     "date_source": "wordpress-api",
     "date_source_url": "https://mehlmanmedical.com/wp-json/wp/v2/posts/38396",
     "previous_published": "2026-10-18T10:43:06+00:00"
+  },
+  {
+    "url": "https://mehlmanmedical.com/hy-usmle-q-1660-micro/",
+    "title": "HY USMLE Q #1660 – Micro",
+    "qnum": 1660,
+    "content_html": "<p style=\"text-align: center;\"><iframe allowfullscreen=\"allowfullscreen\" height=\"314\" src=\"https://www.youtube.com/embed/sApkv5jIOjA\" width=\"560\"></iframe></p>\n<p>A 30-year-old man is evaluated in hospital. A urinalysis and his hand are shown.</p>\n<p><img alt=\"\" class=\"alignnone wp-image-38438\" data-recalc-dims=\"1\" decoding=\"async\" fetchpriority=\"high\" height=\"329\" sizes=\"(max-width: 440px) 100vw, 440px\" src=\"https://i0.wp.com/mehlmanmedical.com/wp-content/uploads/2026/10/Screenshot-2026-10-21-at-8.13.15-PM.png?resize=440%2C329&amp;ssl=1\" width=\"440\"/><img alt=\"\" class=\"alignnone wp-image-38437\" data-recalc-dims=\"1\" decoding=\"async\" height=\"332\" sizes=\"(max-width: 444px) 100vw, 444px\" src=\"https://i0.wp.com/mehlmanmedical.com/wp-content/uploads/2026/10/Screenshot-2026-10-21-at-8.11.24-PM.png?resize=444%2C332&amp;ssl=1\" width=\"444\"/></p>\n<p>Which of the following is most likely to be seen in this patient?</p>\n<p>A) Conjunctivitis<br/>\nB) Deficiency of complement protein C1q<br/>\nC) Infection with obligate intracellular organism<br/>\nD) Tenosynovitis<br/>\nE) Treatment with azithromycin or doxycycline</p>",
+    "content_fetched_at": "2026-10-21T11:51:36.988794+00:00",
+    "published": "2026-10-21T11:32:52+00:00",
+    "date_source": "wordpress-api",
+    "date_source_url": "https://mehlmanmedical.com/wp-json/wp/v2/posts/38435"
   }
 ]
