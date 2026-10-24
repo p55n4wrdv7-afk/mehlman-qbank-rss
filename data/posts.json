@@ -15311,5 +15311,15 @@
     "date_source": "wordpress-api",
     "date_source_url": "https://mehlmanmedical.com/wp-json/wp/v2/posts/38435",
     "previous_published": "2026-10-21T11:32:52+00:00"
+  },
+  {
+    "url": "https://mehlmanmedical.com/hy-usmle-q-1661-msk/",
+    "title": "HY USMLE Q #1661 – MSK",
+    "qnum": 1661,
+    "content_html": "<p style=\"text-align: center;\"><iframe allowfullscreen=\"allowfullscreen\" height=\"314\" src=\"https://www.youtube.com/embed/HICnyEiDw1o\" width=\"560\"></iframe></p>\n<p>A 40-year-old man presents to the physician. His right hand is shown.</p>\n<p><img alt=\"\" class=\"alignnone wp-image-38462\" data-recalc-dims=\"1\" decoding=\"async\" fetchpriority=\"high\" height=\"409\" sizes=\"(max-width: 483px) 100vw, 483px\" src=\"https://i0.wp.com/mehlmanmedical.com/wp-content/uploads/2026/10/Screenshot-2026-10-24-at-0.31.42-PM.png?resize=483%2C409&amp;ssl=1\" width=\"483\"/></p>\n<p>Which of the following is most likely to be associated with this patient?</p>\n<p>A) Hypothyroidism<br/>\nB) Marjolin ulcer<br/>\nC) Morton neuroma<br/>\nD) Norwegian ancestory<br/>\nE) THC use</p>",
+    "content_fetched_at": "2026-10-24T15:58:18.222609+00:00",
+    "published": "2026-10-24T11:23:51+00:00",
+    "date_source": "wordpress-api",
+    "date_source_url": "https://mehlmanmedical.com/wp-json/wp/v2/posts/38461"
   }
 ]
