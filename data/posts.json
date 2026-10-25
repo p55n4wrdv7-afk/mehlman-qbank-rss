@@ -15322,5 +15322,15 @@
     "date_source": "wordpress-api",
     "date_source_url": "https://mehlmanmedical.com/wp-json/wp/v2/posts/38461",
     "previous_published": "2026-10-24T11:23:51+00:00"
+  },
+  {
+    "url": "https://mehlmanmedical.com/hy-usmle-q-1662-pharm/",
+    "title": "HY USMLE Q #1662 – Pharm",
+    "qnum": 1662,
+    "content_html": "<p style=\"text-align: center;\"><iframe allowfullscreen=\"allowfullscreen\" height=\"314\" src=\"https://www.youtube.com/embed/mhOOVC58nEI\" width=\"560\"></iframe></p>\n<p>A 38-year-old woman is managed in hospital. Hydralazine is administered as part of the management. Which of the following is most likely to occur as a result of this pharmacotherapy?</p>\n<p>A) Arterioloconstriction; bradycardia; decreased CNIX firing<br/>\nB) Arterioloconstriction; tachycardia; increased CNIX firing<br/>\nC) Arteriolodilation; bradycardia; increased CNIX firing<br/>\nD) Arteriolodilation; tachycardia; decreased CNIX firing<br/>\nE) Venoconstriction; bradycardia; decreased CNIX firing<br/>\nF) Venoconstriction; tachycardia; increased CNIX firing<br/>\nG) Venodilation; bradycardia; increased CNIX firing<br/>\nH) Venodilation; tachycardia; increased CNIX firing</p>",
+    "content_fetched_at": "2026-10-25T16:23:20.325179+00:00",
+    "published": "2026-10-25T12:00:32+00:00",
+    "date_source": "wordpress-api",
+    "date_source_url": "https://mehlmanmedical.com/wp-json/wp/v2/posts/38474"
   }
 ]
