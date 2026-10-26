@@ -15333,5 +15333,15 @@
     "date_source": "wordpress-api",
     "date_source_url": "https://mehlmanmedical.com/wp-json/wp/v2/posts/38474",
     "previous_published": "2026-10-25T12:00:32+00:00"
+  },
+  {
+    "url": "https://mehlmanmedical.com/hy-usmle-q-1663-immuno/",
+    "title": "HY USMLE Q #1663 – Immuno",
+    "qnum": 1663,
+    "content_html": "<p style=\"text-align: center;\"><iframe allowfullscreen=\"allowfullscreen\" height=\"314\" src=\"https://www.youtube.com/embed/PxQuxM5W_Y8\" width=\"560\"></iframe></p>\n<p>A 3-year-old boy is brought to the pediatrician by his mom for recurrent bacterial skin infections since infancy. His parents report that the affected areas frequently become erythematous and swollen but rarely produce pus. Physical exam shows various ulcerated skin lesions without surrounding inflammation. Which of the following is the most likely molecular defect in this patient?</p>\n<p>A. Adenosine deaminase<br/>\nB. CD40L<br/>\nC. Integrin<br/>\nD. Myeloperoxidase<br/>\nE. Tyrosine kinase</p>",
+    "content_fetched_at": "2026-10-26T13:06:02.196730+00:00",
+    "published": "2026-10-26T11:35:05+00:00",
+    "date_source": "wordpress-api",
+    "date_source_url": "https://mehlmanmedical.com/wp-json/wp/v2/posts/38492"
   }
 ]
