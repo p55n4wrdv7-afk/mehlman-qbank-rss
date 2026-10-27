@@ -15344,5 +15344,15 @@
     "date_source": "wordpress-api",
     "date_source_url": "https://mehlmanmedical.com/wp-json/wp/v2/posts/38492",
     "previous_published": "2026-10-26T11:35:05+00:00"
+  },
+  {
+    "url": "https://mehlmanmedical.com/hy-usmle-q-1664-micro-pharm/",
+    "title": "HY USMLE Q #1664 – Micro / Pharm",
+    "qnum": 1664,
+    "content_html": "<p style=\"text-align: center;\"><iframe allowfullscreen=\"allowfullscreen\" height=\"314\" src=\"https://www.youtube.com/embed/kSDFm4FyOsE\" width=\"560\"></iframe></p>\n<p>A 32-year-old man is evaluated in hospital for a 2-week history of progressively worsening pain with swallowing. He has history of IV drug use. Vitals are normal. Which of the following represents the most appropriate oral pharmacotherapy for this patient?</p>\n<p><img alt=\"\" class=\"alignnone wp-image-38515\" data-recalc-dims=\"1\" decoding=\"async\" fetchpriority=\"high\" height=\"535\" sizes=\"(max-width: 581px) 100vw, 581px\" src=\"https://i0.wp.com/mehlmanmedical.com/wp-content/uploads/2026/10/Fungal-cell.png?resize=581%2C535&amp;ssl=1\" width=\"581\"/></p>",
+    "content_fetched_at": "2026-10-27T18:03:46.276973+00:00",
+    "published": "2026-10-27T15:10:35+00:00",
+    "date_source": "wordpress-api",
+    "date_source_url": "https://mehlmanmedical.com/wp-json/wp/v2/posts/38514"
   }
 ]
