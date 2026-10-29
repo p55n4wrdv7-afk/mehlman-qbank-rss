@@ -15355,5 +15355,15 @@
     "date_source": "wordpress-api",
     "date_source_url": "https://mehlmanmedical.com/wp-json/wp/v2/posts/38514",
     "previous_published": "2026-10-27T15:10:35+00:00"
+  },
+  {
+    "url": "https://mehlmanmedical.com/hy-usmle-q-1665-micro/",
+    "title": "HY USMLE Q #1665 – Micro",
+    "qnum": 1665,
+    "content_html": "<p style=\"text-align: center;\"><iframe allowfullscreen=\"allowfullscreen\" height=\"314\" src=\"https://www.youtube.com/embed/i2PAI-5X_ko\" width=\"560\"></iframe></p>\n<p>A 7-year-old boy is brought to the ED with a 4-day history of fever, sore throat, and difficulty swallowing. They immigrated to the United States from China 6 years ago. Physical exam shows cervical lymphadenopathy and a thick, grayish-white membrane in the posterior oropharynx. Which of the following best describes the most likely causal organism?</p>\n<p><img alt=\"\" class=\"alignnone wp-image-38535\" data-recalc-dims=\"1\" decoding=\"async\" fetchpriority=\"high\" height=\"304\" sizes=\"(max-width: 402px) 100vw, 402px\" src=\"https://i0.wp.com/mehlmanmedical.com/wp-content/uploads/2026/10/Screenshot-2026-10-29-at-7.07.38-PM.png?resize=402%2C304&amp;ssl=1\" width=\"402\"/></p>\n<p>A. Gram-negative diplococcus<br/>\nB. Gram-negative rod, lactose-fermenting<br/>\nC. Gram-positive coccus, catalase-positive, coagulase-positive<br/>\nD. Gram-positive rod, non-spore-forming, immotile<br/>\nE. Gram-positive rod, spore-forming, motile</p>\n<p>&nbsp;</p>",
+    "content_fetched_at": "2026-10-29T13:04:05.085170+00:00",
+    "published": "2026-10-29T11:29:47+00:00",
+    "date_source": "wordpress-api",
+    "date_source_url": "https://mehlmanmedical.com/wp-json/wp/v2/posts/38534"
   }
 ]
