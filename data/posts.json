@@ -15366,5 +15366,15 @@
     "date_source": "wordpress-api",
     "date_source_url": "https://mehlmanmedical.com/wp-json/wp/v2/posts/38534",
     "previous_published": "2026-10-29T11:29:47+00:00"
+  },
+  {
+    "url": "https://mehlmanmedical.com/hy-usmle-q-1666-cardiopulmonary/",
+    "title": "HY USMLE Q #1666 – Cardiopulmonary",
+    "qnum": 1666,
+    "content_html": "<p style=\"text-align: center;\"><iframe allowfullscreen=\"allowfullscreen\" height=\"314\" src=\"https://www.youtube.com/embed/ZA19d3gLTYs\" width=\"560\"></iframe></p>\n<p>A 59-year-old man is evaluated in hospital. BP is 140/90. He drinks 4 beers and smokes 2 packs per day. Which of the following is most likely to be seen in this patient?</p>\n<p><img alt=\"\" class=\"alignnone wp-image-38616\" data-recalc-dims=\"1\" decoding=\"async\" fetchpriority=\"high\" height=\"523\" sizes=\"(max-width: 476px) 100vw, 476px\" src=\"https://i0.wp.com/mehlmanmedical.com/wp-content/uploads/2026/11/Screenshot-2026-11-03-at-4.50.34-PM.png?resize=476%2C523&amp;ssl=1\" width=\"476\"/></p>\n<p>A) Cephalization of pulmonary vessels<br/>\nB) Holosystolic murmur that increases with inspiration<br/>\nC) Lateralization of point of maximal impulse<br/>\nD) Reticulonodularity<br/>\nE) Subsegmental perfusion defects</p>",
+    "content_fetched_at": "2026-11-03T14:17:24.297168+00:00",
+    "published": "2026-11-03T11:18:31+00:00",
+    "date_source": "wordpress-api",
+    "date_source_url": "https://mehlmanmedical.com/wp-json/wp/v2/posts/38615"
   }
 ]
