@@ -15377,5 +15377,15 @@
     "date_source": "wordpress-api",
     "date_source_url": "https://mehlmanmedical.com/wp-json/wp/v2/posts/38615",
     "previous_published": "2026-11-03T11:18:31+00:00"
+  },
+  {
+    "url": "https://mehlmanmedical.com/hy-usmle-q-1667-endocrine/",
+    "title": "HY USMLE Q #1667 – Endocrine",
+    "qnum": 1667,
+    "content_html": "<p style=\"text-align: center;\"><iframe allowfullscreen=\"allowfullscreen\" height=\"314\" src=\"https://www.youtube.com/embed/pmQ9diNDDqE\" width=\"560\"></iframe></p>\n<p>A 30-year-old man is evaluated in hospital. The scan on the left represents a normal control subject. The scan on the right is from the patient.</p>\n<p><img alt=\"\" class=\"alignnone wp-image-38632\" data-recalc-dims=\"1\" decoding=\"async\" fetchpriority=\"high\" height=\"153\" sizes=\"(max-width: 451px) 100vw, 451px\" src=\"https://i0.wp.com/mehlmanmedical.com/wp-content/uploads/2026/11/Screenshot-2026-11-05-at-0.12.52-AM.png?resize=451%2C153&amp;ssl=1\" width=\"451\"/></p>\n<p>Which of the following is most likely to be seen in this patient?</p>\n<p>A) Anti-centromere antibodies<br/>\nB) Decreased serum calcium<br/>\nC) Decreased serum phosphate<br/>\nD) Lymphocytic infiltrate<br/>\nE) Thyrotropin receptor antibodies</p>",
+    "content_fetched_at": "2026-11-04T19:46:45.503312+00:00",
+    "published": "2026-11-04T15:36:56+00:00",
+    "date_source": "wordpress-api",
+    "date_source_url": "https://mehlmanmedical.com/wp-json/wp/v2/posts/38631"
   }
 ]
