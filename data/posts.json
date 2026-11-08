@@ -15388,5 +15388,15 @@
     "date_source": "wordpress-api",
     "date_source_url": "https://mehlmanmedical.com/wp-json/wp/v2/posts/38631",
     "previous_published": "2026-11-04T15:36:56+00:00"
+  },
+  {
+    "url": "https://mehlmanmedical.com/hy-usmle-q-1668-cardio/",
+    "title": "HY USMLE Q #1668 – Cardio",
+    "qnum": 1668,
+    "content_html": "<p style=\"text-align: center;\"><iframe allowfullscreen=\"allowfullscreen\" height=\"314\" src=\"https://www.youtube.com/embed/AwSrVqiwIH8\" width=\"560\"></iframe></p>\n<p>A 46-year-old man is evaluated in hospital. His cardiac auscultatory findings are shown.</p>\n<p><img alt=\"\" class=\"alignnone size-full wp-image-38676\" data-recalc-dims=\"1\" decoding=\"async\" height=\"176\" sizes=\"(max-width: 192px) 100vw, 192px\" src=\"https://i0.wp.com/mehlmanmedical.com/wp-content/uploads/2026/11/Screenshot-2026-11-08-at-8.30.05-PM.png?resize=192%2C176&amp;ssl=1\" width=\"192\"/></p>\n<p>Which of the following is most likely to be seen in this patient?</p>\n<p>A) History of cocaine use<br/>\nB) History of doxorubicin use<br/>\nC) History of radiation to the chest<br/>\nD) Marfan syndrome<br/>\nE) Paget disease</p>",
+    "content_fetched_at": "2026-11-08T13:26:51.174804+00:00",
+    "published": "2026-11-08T11:43:13+00:00",
+    "date_source": "wordpress-api",
+    "date_source_url": "https://mehlmanmedical.com/wp-json/wp/v2/posts/38675"
   }
 ]
