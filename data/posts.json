@@ -15399,5 +15399,15 @@
     "date_source": "wordpress-api",
     "date_source_url": "https://mehlmanmedical.com/wp-json/wp/v2/posts/38675",
     "previous_published": "2026-11-08T11:43:13+00:00"
+  },
+  {
+    "url": "https://mehlmanmedical.com/hy-usmle-q-1669-neuro/",
+    "title": "HY USMLE Q #1669 – Neuro",
+    "qnum": 1669,
+    "content_html": "<p style=\"text-align: center;\"><iframe allowfullscreen=\"allowfullscreen\" height=\"314\" src=\"https://www.youtube.com/embed/8eHNy_K_yNE\" width=\"560\"></iframe></p>\n<p>A 68-year-old woman presents to the physician for a 2-day history of increasingly worsening sensation that the room is spinning. She also has minor ear ringing in the left ear. She has not taken any recent medications. She has not vomited. She says she had a sore throat and runny nose about 2 weeks ago but was otherwise fine. There&rsquo;s no family history of any similar conditions. Which of the following is the most likely explanation for this patient&rsquo;s findings?</p>\n<p>A) Benign positional paroxysmal vertigo<br/>\nB) Labyrinthitis<br/>\nC) Meniere disease<br/>\nD) Multiple sclerosis<br/>\nE) Vestibular neuritis</p>",
+    "content_fetched_at": "2026-11-09T22:22:51.911321+00:00",
+    "published": "2026-11-09T11:48:37+00:00",
+    "date_source": "wordpress-api",
+    "date_source_url": "https://mehlmanmedical.com/wp-json/wp/v2/posts/38691"
   }
 ]
