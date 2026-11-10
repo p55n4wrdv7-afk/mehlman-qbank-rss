@@ -15410,5 +15410,15 @@
     "date_source": "wordpress-api",
     "date_source_url": "https://mehlmanmedical.com/wp-json/wp/v2/posts/38691",
     "previous_published": "2026-11-09T11:48:37+00:00"
+  },
+  {
+    "url": "https://mehlmanmedical.com/hy-usmle-q-1670-endocrine/",
+    "title": "HY USMLE Q #1670 – Endocrine",
+    "qnum": 1670,
+    "content_html": "<p style=\"text-align: center;\"><iframe allowfullscreen=\"allowfullscreen\" height=\"314\" src=\"https://www.youtube.com/embed/yfGF_4cJCNM\" width=\"560\"></iframe></p>\n<p>A 40-year-old woman comes to the physician for a follow-up appointment. She has a long history of rheumatoid arthritis managed with ibuprofen, prednisone, and methotrexate. Blood pressure is 145/90. Which of the following is the following is the most salient explanation for this patient&rsquo;s hypertension?</p>\n<p>A) Increased &alpha;-adrenergic receptor expression<br/>\nB) Increased &beta;-adrenergic receptor expression<br/>\nC) Increased catecholamine release<br/>\nD) Increased myocardial contractility<br/>\nE) Poor glycemic control</p>",
+    "content_fetched_at": "2026-11-10T19:45:01.509733+00:00",
+    "published": "2026-11-10T12:40:07+00:00",
+    "date_source": "wordpress-api",
+    "date_source_url": "https://mehlmanmedical.com/wp-json/wp/v2/posts/38697"
   }
 ]
