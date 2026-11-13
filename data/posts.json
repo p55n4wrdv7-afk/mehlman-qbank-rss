@@ -15432,5 +15432,15 @@
     "date_source": "wordpress-api",
     "date_source_url": "https://mehlmanmedical.com/wp-json/wp/v2/posts/38712",
     "previous_published": "2026-11-11T13:07:37+00:00"
+  },
+  {
+    "url": "https://mehlmanmedical.com/hy-usmle-q-1672-pathology/",
+    "title": "HY USMLE Q #1672 – Pathology",
+    "qnum": 1672,
+    "content_html": "<p style=\"text-align: center;\"><iframe allowfullscreen=\"allowfullscreen\" height=\"314\" src=\"https://www.youtube.com/embed/vT7r7Pp1_U8\" width=\"560\"></iframe></p>\n<p>A 49-year-old man is evaluated in hospital. There is mild ankle puffiness.</p>\n<p><img alt=\"\" class=\"alignnone wp-image-38755\" data-recalc-dims=\"1\" decoding=\"async\" fetchpriority=\"high\" height=\"329\" sizes=\"(max-width: 384px) 100vw, 384px\" src=\"https://i0.wp.com/mehlmanmedical.com/wp-content/uploads/2026/11/Screenshot-2026-11-13-at-3.39.44-PM.png?resize=384%2C329&amp;ssl=1\" width=\"384\"/><img alt=\"\" class=\"alignnone wp-image-38754\" data-recalc-dims=\"1\" decoding=\"async\" height=\"201\" sizes=\"(max-width: 350px) 100vw, 350px\" src=\"https://i0.wp.com/mehlmanmedical.com/wp-content/uploads/2026/11/Screenshot-2026-11-13-at-3.38.09-PM.png?resize=350%2C201&amp;ssl=1\" width=\"350\"/></p>\n<p>Which of the following best explains this patient&rsquo;s ankle findings?</p>\n<p>A) Decreased intravascular oncotic pressure<br/>\nB) Decreased venous return<br/>\nC) Increased inter-endothelial cell spacing<br/>\nD) Increased pulmonary capillary hydrostatic pressure<br/>\nE) Loss of size and charge barrier</p>",
+    "content_fetched_at": "2026-11-13T19:44:07.994753+00:00",
+    "published": "2026-11-13T12:33:26+00:00",
+    "date_source": "wordpress-api",
+    "date_source_url": "https://mehlmanmedical.com/wp-json/wp/v2/posts/38753"
   }
 ]
