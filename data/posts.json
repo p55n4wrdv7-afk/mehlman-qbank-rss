@@ -15443,5 +15443,15 @@
     "date_source": "wordpress-api",
     "date_source_url": "https://mehlmanmedical.com/wp-json/wp/v2/posts/38753",
     "previous_published": "2026-11-13T12:33:26+00:00"
+  },
+  {
+    "url": "https://mehlmanmedical.com/hy-usmle-q-1673-pharm/",
+    "title": "HY USMLE Q #1673 – Pharm",
+    "qnum": 1673,
+    "content_html": "<p style=\"text-align: center;\"><iframe allowfullscreen=\"allowfullscreen\" height=\"314\" src=\"https://www.youtube.com/embed/KRPYYCZ7YdU\" width=\"560\"></iframe></p>\n<p>A 52-year-old man comes to the physician for a follow-up appointment. He has a history of liver transplantation 1 year ago secondary to alpha-1 anti-trypsin deficiency. Blood pressure is 150/90. Serum creatinine is 2.0. There is dense hair growth on his forearms. Which of the following is the most likely explanation for this patient&rsquo;s presentation?</p>\n<p>A) Cyclosporine<br/>\nB) Infliximab<br/>\nC) Methotrexate<br/>\nD) Sirolimus<br/>\nE) Tacrolimus</p>",
+    "content_fetched_at": "2026-11-14T18:04:09.514074+00:00",
+    "published": "2026-11-14T11:56:52+00:00",
+    "date_source": "wordpress-api",
+    "date_source_url": "https://mehlmanmedical.com/wp-json/wp/v2/posts/38766"
   }
 ]
