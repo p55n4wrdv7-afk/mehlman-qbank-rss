@@ -15454,5 +15454,15 @@
     "date_source": "wordpress-api",
     "date_source_url": "https://mehlmanmedical.com/wp-json/wp/v2/posts/38766",
     "previous_published": "2026-11-14T11:56:52+00:00"
+  },
+  {
+    "url": "https://mehlmanmedical.com/hy-usmle-q-1674-neuro-psych/",
+    "title": "HY USMLE Q #1674 – Neuro / Psych",
+    "qnum": 1674,
+    "content_html": "<p style=\"text-align: center;\"><iframe allowfullscreen=\"allowfullscreen\" height=\"314\" src=\"https://www.youtube.com/embed/cGgLb4Mydac\" width=\"560\"></iframe></p>\n<p>A 36-year-old woman comes to the physician for a 1-month history of progressively worsening anxiety while falling asleep. She says she feels like she cannot physically relax and her partner says she often kicks him during the night. Which of the following is the most likely explanation for this patient&rsquo;s presentation?</p>\n<p>A) Decreased total iron binding capacity<br/>\nB) Decreased tyrosine hydroxylase activity<br/>\nC) Increased dopamine transmission<br/>\nD) Increased L-DOPA decarboxylase activity<br/>\nE) Reduced dietary phenylalanine</p>",
+    "content_fetched_at": "2026-11-15T18:52:16.698657+00:00",
+    "published": "2026-11-15T11:32:08+00:00",
+    "date_source": "wordpress-api",
+    "date_source_url": "https://mehlmanmedical.com/wp-json/wp/v2/posts/38773"
   }
 ]
