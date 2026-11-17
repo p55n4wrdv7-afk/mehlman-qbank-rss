@@ -15465,5 +15465,15 @@
     "date_source": "wordpress-api",
     "date_source_url": "https://mehlmanmedical.com/wp-json/wp/v2/posts/38773",
     "previous_published": "2026-11-15T11:32:08+00:00"
+  },
+  {
+    "url": "https://mehlmanmedical.com/hy-usmle-q-1675-pharm/",
+    "title": "HY USMLE Q #1675 – Pharm",
+    "qnum": 1675,
+    "content_html": "<p style=\"text-align: center;\"><iframe allowfullscreen=\"allowfullscreen\" height=\"314\" src=\"https://www.youtube.com/embed/1_cQvGvQtfg\" width=\"560\"></iframe></p>\n<p>A 59-year-old man is evaluated in hospital. He has a 2-week history of progressively worsening yellow-green vision. He takes many medications. 3 weeks ago, he was commenced on quinidine. An agent with which of the following mechanisms of action is most likely responsible for this patient&rsquo;s visual disturbance?</p>\n<p>A) Increases cGMP<br/>\nB) Inhibition of calcium channels<br/>\nC) Inhibits phosphodiesterase 5<br/>\nD) Inhibits sodium/potassium ATPases<br/>\nE) Inhibits arabinosyltransferase</p>",
+    "content_fetched_at": "2026-11-17T20:57:12.514628+00:00",
+    "published": "2026-11-17T11:56:37+00:00",
+    "date_source": "wordpress-api",
+    "date_source_url": "https://mehlmanmedical.com/wp-json/wp/v2/posts/38794"
   }
 ]
