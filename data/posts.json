@@ -15476,5 +15476,15 @@
     "date_source": "wordpress-api",
     "date_source_url": "https://mehlmanmedical.com/wp-json/wp/v2/posts/38794",
     "previous_published": "2026-11-17T11:56:37+00:00"
+  },
+  {
+    "url": "https://mehlmanmedical.com/hy-usmle-q-1676-immuno/",
+    "title": "HY USMLE Q #1676 – Immuno",
+    "qnum": 1676,
+    "content_html": "<p style=\"text-align: center;\"><iframe allowfullscreen=\"allowfullscreen\" height=\"314\" src=\"https://www.youtube.com/embed/Z4AZ5B9GSw0\" width=\"560\"></iframe></p>\n<p>A 9-year-old girl is brought in my ambulance after she became acutely short of breath while playing the backyard. Blood pressure is low. Her father has a history of eczema. Which of the following is most likely to be seen in this patient?</p>\n<p>A) Decreased immunoglobulin crosslinking<br/>\nB) Decreased FcR&epsilon;I receptor binding<br/>\nC) Decreased autacoid<br/>\nD) Decreased protease release<br/>\nE) Increased serum tryptase</p>",
+    "content_fetched_at": "2026-11-19T20:39:13.029335+00:00",
+    "published": "2026-11-19T13:54:52+00:00",
+    "date_source": "wordpress-api",
+    "date_source_url": "https://mehlmanmedical.com/wp-json/wp/v2/posts/38805"
   }
 ]
