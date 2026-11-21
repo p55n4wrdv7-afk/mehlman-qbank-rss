@@ -15487,5 +15487,15 @@
     "date_source": "wordpress-api",
     "date_source_url": "https://mehlmanmedical.com/wp-json/wp/v2/posts/38805",
     "previous_published": "2026-11-19T13:54:52+00:00"
+  },
+  {
+    "url": "https://mehlmanmedical.com/hy-usmle-q-1677-pulmonary/",
+    "title": "HY USMLE Q #1677 – Pulmonary",
+    "qnum": 1677,
+    "content_html": "<p style=\"text-align: center;\"><iframe allowfullscreen=\"allowfullscreen\" height=\"314\" src=\"https://www.youtube.com/embed/IT30sdZ_RQg\" width=\"560\"></iframe></p>\n<p>A 49-year-old woman comes to the physician for a 1-week history of fever and dry cough. CD4 count is 90/&mu;L. Vitals are: temperature 102 F, HR 74, RR 18, BP 120/80. Creatinine is 3.0 mg/dL. Serum potassium is 5.3 mEq/L.</p>\n<p><img alt=\"\" class=\"alignnone wp-image-38823\" data-recalc-dims=\"1\" decoding=\"async\" fetchpriority=\"high\" height=\"462\" sizes=\"(max-width: 457px) 100vw, 457px\" src=\"https://i0.wp.com/mehlmanmedical.com/wp-content/uploads/2026/11/Screenshot-2026-11-21-at-7.37.27-PM.png?resize=457%2C462&amp;ssl=1\" width=\"457\"/></p>\n<p>Which of the following is the most appropriate next step in pharmacotherapy?</p>\n<p>A) Azithromycin<br/>\nB) Cefepime + vancomycin<br/>\nC) Ceftriaxone + vancomycin<br/>\nD) Pentamidine<br/>\nE) Trimethoprim + sulfamethoxazole</p>",
+    "content_fetched_at": "2026-11-21T19:17:17.942917+00:00",
+    "published": "2026-11-21T12:48:27+00:00",
+    "date_source": "wordpress-api",
+    "date_source_url": "https://mehlmanmedical.com/wp-json/wp/v2/posts/38822"
   }
 ]
