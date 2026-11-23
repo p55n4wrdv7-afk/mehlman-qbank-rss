@@ -15498,5 +15498,15 @@
     "date_source": "wordpress-api",
     "date_source_url": "https://mehlmanmedical.com/wp-json/wp/v2/posts/38822",
     "previous_published": "2026-11-21T12:48:27+00:00"
+  },
+  {
+    "url": "https://mehlmanmedical.com/hy-usmle-q-1678-ent/",
+    "title": "HY USMLE Q #1678 – ENT",
+    "qnum": 1678,
+    "content_html": "<p style=\"text-align: center;\"><iframe allowfullscreen=\"allowfullscreen\" height=\"314\" src=\"https://www.youtube.com/embed/8_autAOjo-M\" width=\"560\"></iframe></p>\n<p>A 16-year-old boy is evaluated in hospital. On presentation, he has a muffled, &ldquo;hot potato&rdquo; voice and pain with opening of the mouth.</p>\n<p><img alt=\"\" class=\"alignnone wp-image-38844\" data-recalc-dims=\"1\" decoding=\"async\" fetchpriority=\"high\" height=\"429\" sizes=\"(max-width: 405px) 100vw, 405px\" src=\"https://i0.wp.com/mehlmanmedical.com/wp-content/uploads/2026/11/Screenshot-2026-11-23-at-9.34.49-PM.png?resize=405%2C429&amp;ssl=1\" width=\"405\"/></p>\n<p>Which of the following is the most likely diagnosis?</p>\n<p>A) Bacterial tracheitis<br/>\nB) Croup<br/>\nC) Epiglottitis<br/>\nD) Retropharyngeal abscess<br/>\nE) Quinsy</p>",
+    "content_fetched_at": "2026-11-23T23:54:57.608798+00:00",
+    "published": "2026-11-23T12:58:59+00:00",
+    "date_source": "wordpress-api",
+    "date_source_url": "https://mehlmanmedical.com/wp-json/wp/v2/posts/38842"
   }
 ]
